@@ -262,6 +262,26 @@ def fit_reference_pipeline(df_raw, hamd_cols, scheme_name='Standard', feature_ke
     return pipeline, X, y
 
 
+def _generate_counterfactuals_robust(exp, query_df, desired_total):
+    """Try multiple DiCE configurations to avoid empty counterfactual sets."""
+    # Primary attempt
+    try:
+        return exp.generate_counterfactuals(query_df, total_CFs=desired_total, desired_class="opposite")
+    except Exception:
+        pass
+
+    # Fallback: allow a larger search and k-d tree neighbor search
+    try:
+        return exp.generate_counterfactuals(
+            query_df,
+            total_CFs=desired_total * 2,
+            desired_class="opposite",
+            method="kdtree",
+        )
+    except Exception:
+        return None
+
+
 def compute_counterfactual_feature_changes(pipeline, X, y, seed):
     try:
         import dice_ml
@@ -284,10 +304,11 @@ def compute_counterfactual_feature_changes(pipeline, X, y, seed):
         query_x = row.drop('Label')
         query_df = pd.DataFrame([query_x])
 
-        try:
-            cf_examples = exp.generate_counterfactuals(query_df, total_CFs=3, desired_class="opposite")
-        except Exception as e:
-            print(f"   [WARN] Counterfactual generation failed for seed {seed}: {e}")
+        cf_examples = _generate_counterfactuals_robust(exp, query_df, desired_total=3)
+        if cf_examples is None:
+            print(
+                f"   [WARN] Counterfactual generation failed for seed {seed}: No counterfactuals found for any of the query points!"
+            )
             continue
 
         if not cf_examples.cf_examples_list:
@@ -369,18 +390,26 @@ def run_lime_local_explanations(pipeline, X, scheme_name):
         training_data=X.values,
         feature_names=list(X.columns),
         mode='classification',
-        discretize_continuous=True
+        discretize_continuous=False  # avoid discretizer truncnorm issues on low-variance features
     )
 
     instances = X.sample(min(10, len(X)), random_state=RANDOM_STATE)
     explanations = []
     for idx, row in instances.iterrows():
-        exp = explainer.explain_instance(row.values, pipeline.predict_proba, num_features=min(10, X.shape[1]))
-        explanations.append({
-            'Scheme': scheme_name,
-            'InstanceIndex': int(idx),
-            'FeatureWeights': exp.as_list()
-        })
+        try:
+            exp = explainer.explain_instance(
+                row.values,
+                pipeline.predict_proba,
+                num_features=min(10, X.shape[1]),
+            )
+            explanations.append({
+                'Scheme': scheme_name,
+                'InstanceIndex': int(idx),
+                'FeatureWeights': exp.as_list()
+            })
+        except Exception as e:
+            print(f"   [WARN] LIME explanation failed for instance {idx}: {e}")
+            continue
     return explanations
 
 # ==========================================
