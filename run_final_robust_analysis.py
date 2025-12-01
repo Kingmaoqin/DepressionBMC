@@ -282,8 +282,22 @@ def compute_counterfactual_feature_changes(pipeline, X, y, seed):
 
     for _, row in sample_df.iterrows():
         query_x = row.drop('Label')
-        cf_examples = exp.generate_counterfactuals(query_x, total_CFs=3, desired_class="opposite")
-        for _, cf_row in cf_examples.cf_examples_list[0].final_cfs_df.iterrows():
+        query_df = pd.DataFrame([query_x])
+
+        try:
+            cf_examples = exp.generate_counterfactuals(query_df, total_CFs=3, desired_class="opposite")
+        except Exception as e:
+            print(f"   [WARN] Counterfactual generation failed for seed {seed}: {e}")
+            continue
+
+        if not cf_examples.cf_examples_list:
+            continue
+
+        cf_df = cf_examples.cf_examples_list[0].final_cfs_df
+        if cf_df is None or cf_df.empty:
+            continue
+
+        for _, cf_row in cf_df.iterrows():
             for feat in X.columns:
                 if not np.isclose(cf_row[feat], query_x[feat]):
                     feature_counts[feat] += 1
