@@ -1,4 +1,5 @@
 import json
+import os
 import time
 import warnings
 import re
@@ -7,6 +8,9 @@ from collections import Counter
 import joblib
 import numpy as np
 import pandas as pd
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 from imblearn.over_sampling import SMOTE
 from imblearn.pipeline import Pipeline as ImbPipeline
 from sklearn.impute import SimpleImputer
@@ -43,6 +47,11 @@ BOOTSTRAP_CI_FILE = 'metric_bootstrap_intervals.csv'
 FEATURE_STABILITY_FILE = 'counterfactual_feature_stability.json'
 SHAP_SUMMARY_FILE = 'shap_global_importance.csv'
 LIME_SUMMARY_FILE = 'lime_local_explanations.json'
+PLOTS_DIR = 'analysis_plots'
+TOP_AUC_PLOT = os.path.join(PLOTS_DIR, 'top10_auc.png')
+GAP_PLOT = os.path.join(PLOTS_DIR, 'train_test_gap.png')
+SCHEME_PLOT = os.path.join(PLOTS_DIR, 'auc_by_scheme.png')
+CSV_ENCODING = 'utf-8-sig'
 CV_FOLDS = 5
 RANDOM_STATE = 42
 RANDOM_SEEDS = [42, 1337, 2025]
@@ -70,7 +79,8 @@ def clean_dosage(val):
 
 def load_data(filepath):
     print(f"[INFO] Loading data from {filepath}...")
-    df = pd.read_csv(filepath)
+    # Use Python engine with automatic delimiter detection to avoid single-column parsing issues
+    df = pd.read_csv(filepath, sep=None, engine='python')
     
     # Map column names if needed (Small dataset uses 'DRUG', large uses 'DRUG_NAME')
     if 'DRUG' in df.columns: df.rename(columns={'DRUG': 'DRUG_NAME'}, inplace=True)
@@ -262,24 +272,26 @@ def fit_reference_pipeline(df_raw, hamd_cols, scheme_name='Standard', feature_ke
     return pipeline, X, y
 
 
-def _generate_counterfactuals_robust(exp, query_df, desired_total):
+def _generate_counterfactuals_robust(data, model, query_df, desired_total):
     """Try multiple DiCE configurations to avoid empty counterfactual sets."""
-    # Primary attempt
-    try:
-        return exp.generate_counterfactuals(query_df, total_CFs=desired_total, desired_class="opposite")
-    except Exception:
-        pass
+    attempts = [
+        ("random", desired_total),
+        ("kdtree", desired_total * 2),
+        ("genetic", desired_total * 3),
+    ]
 
-    # Fallback: allow a larger search and k-d tree neighbor search
-    try:
-        return exp.generate_counterfactuals(
-            query_df,
-            total_CFs=desired_total * 2,
-            desired_class="opposite",
-            method="kdtree",
-        )
-    except Exception:
-        return None
+    last_error = None
+    for method, total in attempts:
+        try:
+            exp = dice_ml.Dice(data, model, method=method)
+            print(f"      [INFO] Counterfactual attempt using '{method}' with {total} targets")
+            return exp.generate_counterfactuals(query_df, total_CFs=total, desired_class="opposite")
+        except Exception as err:
+            last_error = err
+            continue
+
+    print(f"   [WARN] Counterfactual generation failed after {len(attempts)} attempts: {last_error}")
+    return None
 
 
 def compute_counterfactual_feature_changes(pipeline, X, y, seed):
@@ -294,7 +306,6 @@ def compute_counterfactual_feature_changes(pipeline, X, y, seed):
 
     data = dice_ml.Data(dataframe=df_for_dice, continuous_features=list(X.columns), outcome_name='Label')
     model = dice_ml.Model(model=pipeline, backend='sklearn')
-    exp = dice_ml.Dice(data, model, method='random')
 
     rng = np.random.default_rng(seed)
     sample_df = df_for_dice.sample(min(COUNTERFACTUAL_SAMPLES, len(df_for_dice)), random_state=seed)
@@ -304,7 +315,7 @@ def compute_counterfactual_feature_changes(pipeline, X, y, seed):
         query_x = row.drop('Label')
         query_df = pd.DataFrame([query_x])
 
-        cf_examples = _generate_counterfactuals_robust(exp, query_df, desired_total=3)
+        cf_examples = _generate_counterfactuals_robust(data, model, query_df, desired_total=3)
         if cf_examples is None:
             print(
                 f"   [WARN] Counterfactual generation failed for seed {seed}: No counterfactuals found for any of the query points!"
@@ -412,8 +423,81 @@ def run_lime_local_explanations(pipeline, X, scheme_name):
             continue
     return explanations
 
+
 # ==========================================
-# 6. Main Analysis Loop
+# 6. Visualization Helpers
+# ==========================================
+def _plot_top_auc(res_df):
+    if res_df.empty:
+        return None
+
+    top_df = res_df.sort_values('Test_AUC', ascending=False).head(10)
+    labels = top_df.apply(lambda r: f"{r['Scheme']} | {r['Model']} | {r['Feature_Set']}", axis=1)
+
+    plt.figure(figsize=(10, 6))
+    plt.barh(labels, top_df['Test_AUC'], color='#3b82f6')
+    plt.xlabel('Test AUC')
+    plt.title('Top 10 Combinations by Test AUC')
+    plt.gca().invert_yaxis()
+    plt.tight_layout()
+    plt.savefig(TOP_AUC_PLOT)
+    plt.close()
+    return TOP_AUC_PLOT
+
+
+def _plot_train_test_gap(res_df):
+    if res_df.empty:
+        return None
+
+    gap_df = res_df.copy()
+    gap_df['Acc_Gap'] = gap_df['Train_Acc'] - gap_df['Test_Acc']
+    plt.figure(figsize=(10, 6))
+    plt.scatter(gap_df['Test_Acc'], gap_df['Acc_Gap'], alpha=0.5, s=25)
+    plt.axhline(0, color='gray', linestyle='--', linewidth=1)
+    plt.xlabel('Test Accuracy')
+    plt.ylabel('Train-Test Accuracy Gap')
+    plt.title('Overfitting Check Across Experiments')
+    plt.tight_layout()
+    plt.savefig(GAP_PLOT)
+    plt.close()
+    return GAP_PLOT
+
+
+def _plot_auc_by_scheme(res_df):
+    if res_df.empty:
+        return None
+
+    schemes = res_df['Scheme'].unique()
+    data = [res_df[res_df['Scheme'] == s]['Test_AUC'].dropna() for s in schemes]
+    plt.figure(figsize=(10, 6))
+    plt.boxplot(data, labels=schemes, patch_artist=True,
+                boxprops=dict(facecolor='#93c5fd', color='#1d4ed8'),
+                medianprops=dict(color='#0f172a'))
+    plt.ylabel('Test AUC')
+    plt.title('Performance Distribution by Labeling Scheme')
+    plt.tight_layout()
+    plt.savefig(SCHEME_PLOT)
+    plt.close()
+    return SCHEME_PLOT
+
+
+def save_visualizations(res_df):
+    if res_df.empty:
+        print("[WARN] No results to visualize.")
+        return
+
+    os.makedirs(PLOTS_DIR, exist_ok=True)
+    plot_paths = [
+        _plot_top_auc(res_df),
+        _plot_train_test_gap(res_df),
+        _plot_auc_by_scheme(res_df)
+    ]
+    generated = [p for p in plot_paths if p is not None]
+    if generated:
+        print(f"[INFO] Saved visualizations to: {', '.join(generated)}")
+
+# ==========================================
+# 7. Main Analysis Loop
 # ==========================================
 def run_analysis():
     start_time = time.time()
@@ -542,11 +626,12 @@ def run_analysis():
 
     # Save primary metrics
     res_df = pd.DataFrame(results)
-    res_df.to_csv(RESULTS_FILE, index=False)
+    res_df.to_csv(RESULTS_FILE, index=False, sep=',', encoding=CSV_ENCODING)
+    save_visualizations(res_df)
 
     # Save bootstrap confidence intervals
     if bootstrap_rows:
-        pd.DataFrame(bootstrap_rows).to_csv(BOOTSTRAP_CI_FILE, index=False)
+        pd.DataFrame(bootstrap_rows).to_csv(BOOTSTRAP_CI_FILE, index=False, sep=',', encoding=CSV_ENCODING)
         print(f"[INFO] Bootstrap CIs saved to {BOOTSTRAP_CI_FILE}")
 
     # Counterfactual stability across seeds and labeling schemes
@@ -561,7 +646,7 @@ def run_analysis():
 
     shap_df = run_shap_global_importance(pipeline, X_ref, scheme_name='Standard')
     if shap_df is not None:
-        shap_df.to_csv(SHAP_SUMMARY_FILE, index=False)
+        shap_df.to_csv(SHAP_SUMMARY_FILE, index=False, sep=',', encoding=CSV_ENCODING)
         print(f"[INFO] SHAP global importance saved to {SHAP_SUMMARY_FILE}")
 
     lime_payload = run_lime_local_explanations(pipeline, X_ref, scheme_name='Standard')
