@@ -140,10 +140,10 @@
 %% Sample for unstructured abstract %%
 %%==================================%%
 
-\abstract{\textbf{Background:} \textcolor{red}{\sout{This study investigates how variations in Major Depressive Disorder (MDD) symptoms, quantified by the Hamilton Rating Scale for Depression (HAM-D), causally influence the prescription of SSRIs versus SNRIs.}} \textcolor{blue}{This study investigates how variations in Major Depressive Disorder (MDD) symptoms (HAM-D) are associated in a predictive model with randomized clinical trial (RCT) arm assignment between SSRIs and SNRIs, treating counterfactual explanations (CFs) as model-based what-if scenarios rather than causal effects.}  
-\textbf{Methods:} \textcolor{red}{\sout{We applied explainable counterfactual reasoning with counterfactual explanations (CFs) to assess the impact of specific symptom changes on antidepressant choice.}} \textcolor{blue}{We applied explainable counterfactual reasoning with CFs to quantify minimal symptom adjustments that would flip the model-predicted RCT assignment (opposite antidepressant class).}  
-\textbf{Results:} \textcolor{red}{\sout{Among 17 binary classifiers, Random Forest achieved highest performance (accuracy, F1, precision, recall, ROC-AUC near 0.85).}} \textcolor{blue}{Across 17 classifiers, CatBoost and Random Forest achieved the highest performance; typical test metrics ranged ~0.70–0.78 with best ROC-AUC ~0.78.} Sample-based CFs revealed both local and global feature importance of individual symptoms in medication selection.  
-\textbf{Conclusions:} \textcolor{red}{\sout{Counterfactual reasoning elucidates which MDD symptoms most strongly drive SSRI versus SNRI selection, enhancing interpretability of AI-based clinical decision support systems.}} \textcolor{blue}{Counterfactual reasoning highlights which MDD symptoms the model uses to distinguish SSRI vs. SNRI trial assignments, supporting interpretable AI-based decision support while requiring prospective real-world validation beyond the RCT context.} Future work should validate these findings on more diverse cohorts and refine algorithms for clinical deployment.
+\abstract{\textbf{Background:} \textcolor{red}{\sout{This study investigates how variations in Major Depressive Disorder (MDD) symptoms, quantified by the Hamilton Rating Scale for Depression (HAM-D), causally influence the prescription of SSRIs versus SNRIs.}} \textcolor{blue}{This study investigates how variations in Major Depressive Disorder (MDD) symptoms (HAM-D) are associated in a predictive model with randomized clinical trial (RCT) arm assignment between SSRIs and SNRIs, treating counterfactual explanations (CFs) as model-based what-if scenarios rather than causal effects in a proof-of-concept setting.}
+\textbf{Methods:} \textcolor{red}{\sout{We applied explainable counterfactual reasoning with counterfactual explanations (CFs) to assess the impact of specific symptom changes on antidepressant choice.}} \textcolor{blue}{We applied explainable counterfactual reasoning with CFs to quantify minimal symptom adjustments that would flip the model-predicted RCT assignment (opposite antidepressant class) while keeping inputs within clinically valid bounds.}
+\textbf{Results:} \textcolor{red}{\sout{Among 17 binary classifiers, Random Forest achieved highest performance (accuracy, F1, precision, recall, ROC-AUC near 0.85).}} \textcolor{blue}{Across 17 classifiers, CatBoost and Random Forest achieved the highest performance; typical test metrics ranged ~0.70–0.78 with best ROC-AUC ~0.78 based on stratified and group cross-validation without test-time oversampling.} \textcolor{blue}{Sample-based CFs revealed both local and aggregated feature importance patterns aligned with the model-predicted RCT arm.}
+\textbf{Conclusions:} \textcolor{red}{\sout{Counterfactual reasoning elucidates which MDD symptoms most strongly drive SSRI versus SNRI selection, enhancing interpretability of AI-based clinical decision support systems.}} \textcolor{blue}{Counterfactual reasoning highlights which MDD symptoms the model uses to distinguish SSRI vs. SNRI trial assignments, supporting interpretable AI-based decision support as a hypothesis-generating, non-causal analysis that requires prospective validation beyond the RCT context.}
 }
 
 %%================================%%
@@ -168,7 +168,7 @@
 
 \section{Introduction}
 \label{sec:introduction}
-% \IEEEPARstart{M}{ajor} depressive disorder (MDD) is a severe mental illness that significantly impacts global public health, leading to deterioration in both physical and mental well-being \cite{sinyor2016suicide}. MDD is one of the leading preventable causes of severe consequences in many countries, including suicide and disability \cite{robins1970establishment},\cite{van2014preventing}. To objectively assess the condition of individuals with depression, the Hamilton Rating Scale for Depression (HAM-D) is one of the most extensively employed assessment tools in depression research and typically self-administered by patients in three common versions, i.e., the 17-item version, the 21-item version, and the 24-item version \cite{carrozzino2020hamilton} \textcolor{black}{\cite{boesen2021ema,ferreira2018depression}}. The 17-item version is the most frequently employed, which is also the version utilized in this paper referred as HAM-D including the symptoms of depression listed in TABLE \ref{tab1} \cite{nixon2020bi}. Each symptom or item is scored ranging from 0-4 or 0-2. Accurate assessment provided by HAM-D lays the foundation for selecting appropriate pharmacological treatments for MDD.
+\textcolor{red}{\sout{% \IEEEPARstart{M}{ajor} depressive disorder (MDD) is a severe mental illness that significantly impacts global public health, leading to deterioration in both physical and mental well-being \cite{sinyor2016suicide}. MDD is one of the leading preventable causes of severe consequences in many countries, including suicide and disability \cite{robins1970establishment},\cite{van2014preventing}. To objectively assess the condition of individuals with depression, the Hamilton Rating Scale for Depression (HAM-D) is one of the most extensively employed assessment tools in depression research and typically self-administered by patients in three common versions, i.e., the 17-item version, the 21-item version, and the 24-item version \cite{carrozzino2020hamilton} \textcolor{black}{\cite{boesen2021ema,ferreira2018depression}}. The 17-item version is the most frequently employed, which is also the version utilized in this paper referred as HAM-D including the symptoms of depression listed in TABLE \ref{tab1} \cite{nixon2020bi}. Each symptom or item is scored ranging from 0-4 or 0-2. Accurate assessment provided by HAM-D lays the foundation for selecting appropriate pharmacological treatments for MDD.}}
 Major depressive disorder (MDD) is a severe mental illness that significantly impacts global public health, leading to deterioration in both physical and mental well-being \cite{sinyor2016suicide}. The Hamilton Rating Scale for Depression (HAM-D) is one of the most extensively employed assessment tools to objectively assess the severity of depression. In research settings, it is clinician-administered, and there are multiple versions, i.e., the 7-item version, 17-item version, 21-item version, and 24-item version \cite{carrozzino2020hamilton, mcintyre2002assessing, hamilton1960rating, hamilton1967development}. The 17-item version is the most frequently employed, which is also the version utilized in this paper. The symptoms of depression are listed in TABLE \ref{tab1} \cite{nixon2020bi}. Each symptom or item is scored ranging from 0-4, 0-3 or 0-2. \textcolor{black}{Historically the HAM-D total scores were used to assess depression severity pre- and post-treatment. It is hypothesized that by identifying patient-specific symptoms, a clinician could tailor treatment by drug class. This could provide input for the ultimate goal of the development of a treatment algorithm in clinical utility for clinicians looking to predict which treatment option should be used based on patient presentation \cite{papakostas2007augmentation}.}
 %The manifestation of depression extends beyond mere feelings of sadness and lack of hope for the future; it encompasses a series of symptoms closely interconnected. \cite{hamilton1967development}
 \begin{table}[ht]
@@ -249,7 +249,8 @@ However, AI-based quantification (e.g., feature importance scores that indicate 
 
 % In addition to understanding ML prediction in MDD medication selection, it is significant to personalize treatment plans and improve clinical outcome based on medication reasoning by understanding the causal relationship between HAM-D scales and the anti-depression medicine categories by clinicians. \textcolor{black}{In the context of medical AI, causal relationship helps to explain why an AI model suggests certain treatments for a patient by linking the input symptoms directly to the output recommendations \cite{holzinger2019causability}.} \textcolor{black}{Counterfactual reasoning is a mode of reasoning that involves considering alternative scenarios and contemplating what would have happened if certain conditions or circumstances had been different. \cite{roese2014might, pearl2000models,byrne2007rational}} \textcolor{black}{Counterfactual reasoning is particularly effective in clinical contents, it can be used to simulate different treatment paths and assess their potential outcomes, thus offering more reliable guidance for clinical decisions \cite{hernan2010causal}. Furthermore, counterfactual reasoning is crucial when randomized controlled clinical trials are not feasible or ethical, as it allows for causal inference from observational data by comparing the actual and potential outcomes under different interventions \cite{pearl2000models}. In the context of depression treatment, counterfactual reasoning enables the investigation of questions e.g., "Would a patient’s depressive symptoms have improved if they were prescribed a different antidepressant?" This approach provides a better understanding of the causal effects of medication selection, rather than merely observing correlations.}
 
-ML prediction models may be used to aid in personalized medication treatment, which can help optimize treatment outcomes. In the context of medical AI, “causality” further  aids interpretability by explaining why an AI model suggests certain treatments for a patient through direct links between input symptoms and output recommendations, making  the system’s reasoning clear and understandable \textcolor{black}{ \cite{holzinger2019causability}.} Counterfactual reasoning, a mode of thinking that considers alternative scenarios and what might have happened under different conditions \textcolor{black}{\cite{roese2014might}}, is particularly effective in clinical contexts to learn the causality. \textcolor{black}{In depression treatment, counterfactual reasoning enables questions e.g., 'Would a patient’s depressive symptoms have improved with a different antidepressant?' This provides deeper insights into the causal effects of medication selection beyond mere correlations \cite{hernan2010causal}.}
+\textcolor{red}{\sout{ML prediction models may be used to aid in personalized medication treatment, which can help optimize treatment outcomes. In the context of medical AI, “causality” further  aids interpretability by explaining why an AI model suggests certain treatments for a patient through direct links between input symptoms and output recommendations, making  the system’s reasoning clear and understandable \textcolor{black}{ \cite{holzinger2019causability}.} Counterfactual reasoning, a mode of thinking that considers alternative scenarios and what might have happened under different conditions \textcolor{black}{\cite{roese2014might}}, is particularly effective in clinical contexts to learn the causality. \textcolor{black}{In depression treatment, counterfactual reasoning enables questions e.g., 'Would a patient’s depressive symptoms have improved with a different antidepressant?' This provides deeper insights into the causal effects of medication selection beyond mere correlations \cite{hernan2010causal}.}}}
+\textcolor{blue}{ML prediction models can instead be framed as tools for analyzing associations learned from trial data, where outputs reflect predicted RCT arm assignments rather than direct treatment recommendations. Counterfactual reasoning in this study is used to generate model-based what-if scenarios that explore how symptom changes would alter the model’s SSRI versus SNRI prediction, without asserting causal effects or prescribing clinical actions.}
 
 
 
@@ -617,14 +618,14 @@ We want to generate a set of $k$ CFs, and they will all lead to a different anti
 \textcolor{blue}{
 \begin{table}[!htbp]
   \centering
-  \caption{Balanced accuracy and class-wise metrics from out-of-fold predictions (placeholders to be updated with generated results).}
+    \caption{Balanced accuracy and class-wise metrics from out-of-fold predictions (V2\_Exclusive labeling, With\_Demo features).}
   \label{tab:balanced_metrics}
   \begin{tabular}{|l|c|c|c|}
     \hline
     Split & Balanced Acc & Precision (SSRI/SNRI) & Recall (SSRI/SNRI) \\
     \hline
-    StratifiedKFold & 0.XX & 0.XX / 0.XX & 0.XX / 0.XX \\
-    GroupKFold      & 0.XX & 0.XX / 0.XX & 0.XX / 0.XX \\
+    StratifiedKFold & 0.847 & 0.929 / 0.753 & 0.922 / 0.772 \\
+    GroupKFold      & 0.765 & 0.878 / 0.823 & 0.962 / 0.568 \\
     \hline
   \end{tabular}
 \end{table}
@@ -670,7 +671,7 @@ We categorize the antidepressants into three categories based on medication name
 % For these analyses, we have chosen the most stringent categorization criterion, i.e., Dosing Version 2, to reduce the risk of mislabeling outcome analyses by comparing three versions of classification to identify predictors of differences between drug classes. 
 % \textcolor{black}{As part of the study we choose various ways to separate what is an SSRI and what is an SNRI.  Thus we use three criteria, based upon established beliefs to see if we can disentangle catecholamine effects (seen with SNRIs) and more serotonergic effects (seen with both SSRIs and SNRIs).  Dosing Version 2 is the most stringent,} For instance, at low doses, Venlafaxine acts as an SSRI by enhancing serotonergic neurotransmission, but at higher doses, it increases both serotonergic and noradrenergic activity, functioning as an SNRI \cite{coutens2022psychopharmacological}. \textcolor{black}{In Dosing Version 1, using a less stringent criteria we have more balanced numbers which while the SNRI category, will have more data points (but perhaps, less definitive proof that the group were in fact catecholamine enhancing (or an SNRI).  The first version that chooses simple nomenclature (i.e., classified as an SNRI or an SSRI by name of the drug independent of dose), is the least stringent definition.}  Thus, Dosing Version 2 enables a more specific analysis of the distinct effects of SSRIs versus SNRIs by more accurately identifying how antidepressants function at different doses. 
 
-This classification approach is therefore adopted for subsequent analyses. \textcolor{black}{In the subsequent data processing, the Synthetic Minority Over-sampling Technique (SMOTE) is employed to balance the imbalanced dataset \cite{nitesh2002smote}.} \textcolor{blue}{SMOTE is applied only within training folds (never on validation/test splits), with $k$-neighbors bounded by the minority count to avoid leakage.} One-hot encoding is applied to all HAM-D scores, given that those scores are categorical variables. \textcolor{black}{Due to the variations in mechanisms of action, it is necessary to consider other antidepressant classes to offer maximum value for clinical practice. However, clinical studies are often limited by the specifics of data collection. That is, because this analysis begins with the use of a retrospective dataset, we are limited by what protocols were included in the dataset. }
+This classification approach is therefore adopted for subsequent analyses. \textcolor{black}{In the subsequent data processing, the Synthetic Minority Over-sampling Technique (SMOTE) is employed to balance the imbalanced dataset \cite{nitesh2002smote}.} \textcolor{blue}{SMOTE is applied only within training folds (never on validation/test splits), with $k$-neighbors bounded by the minority count to avoid leakage.} \textcolor{red}{\sout{One-hot encoding is applied to all HAM-D scores, given that those scores are categorical variables.}} \textcolor{blue}{HAM-D items are retained as ordinal integers for model training, and the same ordinal representation is used in counterfactual distance calculations so that multi-step jumps incur larger costs than one-step changes.} \textcolor{black}{Due to the variations in mechanisms of action, it is necessary to consider other antidepressant classes to offer maximum value for clinical practice. However, clinical studies are often limited by the specifics of data collection. That is, because this analysis begins with the use of a retrospective dataset, we are limited by what protocols were included in the dataset. }
 
 
 
@@ -695,6 +696,8 @@ This classification approach is therefore adopted for subsequent analyses. \text
   \end{tabular}
 \end{table}
 }
+
+\textcolor{blue}{Stability analyses across random seeds (42, 1337, 2025) for the V2\_Exclusive, With\_Demo, StratifiedKFold CatBoost configuration yielded a mean test ROC-AUC of 0.773 with a population standard deviation of 0.0045, indicating minimal sensitivity to seed choice. Similar rankings were observed across the three labeling schemes, with V2\_Exclusive consistently outperforming Standard and V1\_Inclusive in the top-10 AUC plot (Fig.~\ref{fig:top10_auc}).}
 
 \textcolor{blue}{
 \begin{table}[!htbp]
@@ -769,66 +772,68 @@ This classification approach is therefore adopted for subsequent analyses. \text
 % \vspace{-10pt}
 % \end{table*}
 
-\begin{table*}[!htbp]
-    \caption{The evaluation metrics of 17 machine learning methods evaluated under the Dosing Version 2 categorization. One-hot encoding, oversampling, and 5-fold cross-validation are applied on all 17 models to improve the corresponding model performances. The evaluation metrics for both training and testing sets are presented.}
-    \centering
-    \resizebox{\textwidth}{!}{%
-    \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|}
-        \hline
-        \multirow{2}{*}{Method} & \multicolumn{5}{c|}{\small Training Set} & \multicolumn{5}{c|}{\small Testing Set} \\ \cmidrule(lr){2-6} \cmidrule(lr){7-11}
-        & Accuracy & F1 Score & Precision & Recall & ROC-AUC 
-        & Accuracy & F1 Score& Precision & Recall & ROC-AUC \\ \hline
-        \multicolumn{11}{|c|}{\textbf{Ensemble machine learning models}} \\ \hline
-        Random Forest & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & 0.9997 
-        & \textbf{0.8497} & \textbf{0.8496} & \textbf{0.8502} & \textbf{0.8497} & \textbf{0.9253} \\
-        CatBoost & 0.9537 & 0.9537 & 0.9557 & 0.9537 & 0.9921 
-        & 0.8261 & 0.8259 & 0.8285 & 0.8261 & 0.8993 \\
-        Stacking & 0.9886 & 0.9886 & 0.9887 & 0.9886 & 0.9989 
-        & 0.8238 & 0.8239 & 0.8245 & 0.8238 & 0.8960 \\
-        Extra Trees & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{1.0000} 
-        & 0.8220 & 0.8221 & 0.8232 & 0.8220 & 0.9013 \\
-        Hist Gradient Boosting & 0.9705 & 0.9704 & 0.9709 & 0.9705 & 0.9961 
-        & 0.8207 & 0.8206 & 0.8228 & 0.8207 & 0.8876 \\
-        Voting & 0.9756 & 0.9756 & 0.9757 & 0.9756 & 0.9974 
-        & 0.8131 & 0.8130 & 0.8153 & 0.8131 & 0.8939 \\
-        AdaBoost & 0.7217 & 0.7215 & 0.7222 & 0.7217 & 0.7856 
-        & 0.7154 & 0.7152 & 0.7184 & 0.7154 & 0.7753 \\
-        Gradient Boosting & 0.7344 & 0.7334 & 0.7375 & 0.7344 & 0.8105 
-        & 0.7003 & 0.6992 & 0.7061 & 0.7003 & 0.7760 \\ \hline
-        \multicolumn{11}{|c|}{\textbf{Nonparametric machine learning models}} \\ \hline
-        K-Nearest Neighbor & 0.9063 & 0.9061 & 0.9104 & 0.9063 & 0.9734 
-        & 0.8077 & 0.8072 & 0.8126 & 0.8077 & 0.8658 \\
-        Decision Tree & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{1.0000} 
-        & 0.7507 & 0.7498 & 0.7551 & 0.7507 & 0.7504 \\ \hline
-        \multicolumn{11}{|c|}{\textbf{Linear parametric machine learning models}} \\ \hline
-        Logistic Regression & 0.7448 & 0.7445 & 0.7456 & 0.7448 & 0.8168 
-        & 0.7252 & 0.7251 & 0.7271 & 0.7252 & 0.7985 \\
-        Linear SVM & 0.7357 & 0.7355 & 0.7364 & 0.7357 & 0.7357 
-        & 0.7212 & 0.7211 & 0.7233 & 0.7212 & 0.7219 \\ \hline
-        \multicolumn{11}{|c|}{\textbf{Nonlinear parametric machine learning models}} \\ \hline
-        Gaussian Process & 0.9954 & 0.9954 & 0.9955 & 0.9954 & 0.9992 
-        & 0.8376 & 0.8376 & 0.8391 & 0.8376 & 0.9098 \\
-        Neural Net & 0.9074 & 0.9074 & 0.9082 & 0.9074 & 0.9673 
-        & 0.7872 & 0.7872 & 0.7888 & 0.7872 & 0.8622 \\
-        RBF SVM & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} 
-        & 0.6967 & 0.6662 & 0.8097 & 0.6967 & 0.6966 \\
-        QDA & 0.6132 & 0.6011 & 0.6259 & 0.6132 & 0.6672 
-        & 0.6031 & 0.5851 & 0.6169 & 0.6031 & 0.6606 \\ \hline
-        \multicolumn{11}{|c|}{\textbf{Bayesian-based machine learning models}} \\ \hline
-        Naive Bayes & 0.6079 & 0.5467 & 0.7347 & 0.6079 & 0.7030 
-        & 0.6079 & 0.5474 & 0.7348 & 0.6079 & 0.6941 \\ \hline
-    \end{tabular}%
-    }
-    \label{tab:performance}
-\vspace{-10pt}
-\end{table*}
+\textcolor{red}{\sout{Previously oversampled, one-hot encoded cross-validation results (Table~\ref{tab:performance}) are removed from the main text to avoid confusion with the leakage-free pipeline; they are retained only in prior drafts for archival comparison.}}
+% \begin{table*}[!htbp]
+%     \caption{The evaluation metrics of 17 machine learning methods evaluated under the Dosing Version 2 categorization. One-hot encoding, oversampling, and 5-fold cross-validation are applied on all 17 models to improve the corresponding model performances. The evaluation metrics for both training and testing sets are presented.}
+%     \centering
+%     \resizebox{\textwidth}{!}{%
+%     \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|}
+%         \hline
+%         \multirow{2}{*}{Method} & \multicolumn{5}{c|}{\small Training Set} & \multicolumn{5}{c|}{\small Testing Set} \\ \cmidrule(lr){2-6} \cmidrule(lr){7-11}
+%         & Accuracy & F1 Score & Precision & Recall & ROC-AUC
+%         & Accuracy & F1 Score& Precision & Recall & ROC-AUC \\ \hline
+%         \multicolumn{11}{|c|}{\textbf{Ensemble machine learning models}} \\ \hline
+%         Random Forest & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & 0.9997
+%         & \textbf{0.8497} & \textbf{0.8496} & \textbf{0.8502} & \textbf{0.8497} & \textbf{0.9253} \\
+%         CatBoost & 0.9537 & 0.9537 & 0.9557 & 0.9537 & 0.9921
+%         & 0.8261 & 0.8259 & 0.8285 & 0.8261 & 0.8993 \\
+%         Stacking & 0.9886 & 0.9886 & 0.9887 & 0.9886 & 0.9989
+%         & 0.8238 & 0.8239 & 0.8245 & 0.8238 & 0.8960 \\
+%         Extra Trees & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{1.0000}
+%         & 0.8220 & 0.8221 & 0.8232 & 0.8220 & 0.9013 \\
+%         Hist Gradient Boosting & 0.9705 & 0.9704 & 0.9709 & 0.9705 & 0.9961
+%         & 0.8207 & 0.8206 & 0.8228 & 0.8207 & 0.8876 \\
+%         Voting & 0.9756 & 0.9756 & 0.9757 & 0.9756 & 0.9974
+%         & 0.8131 & 0.8130 & 0.8153 & 0.8131 & 0.8939 \\
+%         AdaBoost & 0.7217 & 0.7215 & 0.7222 & 0.7217 & 0.7856
+%         & 0.7154 & 0.7152 & 0.7184 & 0.7154 & 0.7753 \\
+%         Gradient Boosting & 0.7344 & 0.7334 & 0.7375 & 0.7344 & 0.8105
+%         & 0.7003 & 0.6992 & 0.7061 & 0.7003 & 0.7760 \\ \hline
+%         \multicolumn{11}{|c|}{\textbf{Nonparametric machine learning models}} \\ \hline
+%         K-Nearest Neighbor & 0.9063 & 0.9061 & 0.9104 & 0.9063 & 0.9734
+%         & 0.8077 & 0.8072 & 0.8126 & 0.8077 & 0.8658 \\
+%         Decision Tree & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{1.0000}
+%         & 0.7507 & 0.7498 & 0.7551 & 0.7507 & 0.7504 \\ \hline
+%         \multicolumn{11}{|c|}{\textbf{Linear parametric machine learning models}} \\ \hline
+%         Logistic Regression & 0.7448 & 0.7445 & 0.7456 & 0.7448 & 0.8168
+%         & 0.7252 & 0.7251 & 0.7271 & 0.7252 & 0.7985 \\
+%         Linear SVM & 0.7357 & 0.7355 & 0.7364 & 0.7357 & 0.7357
+%         & 0.7212 & 0.7211 & 0.7233 & 0.7212 & 0.7219 \\ \hline
+%         \multicolumn{11}{|c|}{\textbf{Nonlinear parametric machine learning models}} \\ \hline
+%         Gaussian Process & 0.9954 & 0.9954 & 0.9955 & 0.9954 & 0.9992
+%         & 0.8376 & 0.8376 & 0.8391 & 0.8376 & 0.9098 \\
+%         Neural Net & 0.9074 & 0.9074 & 0.9082 & 0.9074 & 0.9673
+%         & 0.7872 & 0.7872 & 0.7888 & 0.7872 & 0.8622 \\
+%         RBF SVM & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991}
+%         & 0.6967 & 0.6662 & 0.8097 & 0.6967 & 0.6966 \\
+%         QDA & 0.6132 & 0.6011 & 0.6259 & 0.6132 & 0.6672
+%         & 0.6031 & 0.5851 & 0.6169 & 0.6031 & 0.6606 \\ \hline
+%         \multicolumn{11}{|c|}{\textbf{Bayesian-based machine learning models}} \\ \hline
+%         Naive Bayes & 0.6079 & 0.5467 & 0.7347 & 0.6079 & 0.7030
+%         & 0.6079 & 0.5474 & 0.7348 & 0.6079 & 0.6941 \\ \hline
+%     \end{tabular}%
+%     }
+%     \label{tab:performance}
+% \vspace{-10pt}
+% \end{table*}
 
-\begin{figure}[!t]
-\centerline{\includegraphics[width=0.5\columnwidth]{matrix.png}}
-\caption{Confusion matrix of random forest model trained on oversampled and one-hot encoded data classified by V2 dosage.}
-\label{fig2}
-
-\end{figure}
+\textcolor{red}{\sout{The oversampled confusion matrix (Fig.~\ref{fig2}) is omitted to keep the focus on evaluation without test-fold augmentation.}}
+%\begin{figure}[!t]
+%\centerline{\includegraphics[width=0.5\columnwidth]{matrix.png}}
+%\caption{Confusion matrix of random forest model trained on oversampled and one-hot encoded data classified by V2 dosage.}
+%\label{fig2}
+%
+%\end{figure}
 
 % \begin{figure*}[!t]
 % \centerline{\includegraphics[width=\textwidth]{sample.png}}
@@ -868,10 +873,11 @@ In selecting models for this paper, a comprehensive approach is taken to compris
 %This selection is motivated by the need to capture various aspects of the data, benchmark performance across different methodologies, enhance robustness and generalization. By evaluating a wide range of models, we aimed to identify the best-performing model for our dataset, ensuring that the chosen model provides reliable and actionable comprehension for clinical decision support.
 This selection is motivated by the need to capture various properties of the data, benchmark performance across different methodologies, and enhance robustness and generalization. By evaluating a wide range of models, we aim at identifying the best-performing model for our dataset.%, ensuring that the chosen model provides reliable and actionable insights for clinical decision support.
 
-During the model training phase, we employ 5-fold cross-validation to enhance the robustness and generalization capability of the models, providing a more reliable assessment of their performance. The trained models are evaluated across multiple dimensions, including Accuracy, F1 score,  Precision, Recall, and ROC-AUC. The performance of the models is presented in TABLE \ref{tab:performance}, where the Random Forest outperformed all other 16 models, achieving approximately 0.85 in various metrics. Consequently, we select the Random Forest model for the application of CFs techniques. Note that some evaluation metric values of the training set approach 1. However, this is attributed to the inherent nature of the small data, which is clean and devoid of anomalies or missing values. Additionally, the categorization of antidepressants is to some extent associated with the severity of depression, which in turn is measured by HAM-D scores. Hence, the model can readily acquire knowledge from the data.
+\textcolor{red}{\sout{During the model training phase, we employ 5-fold cross-validation to enhance the robustness and generalization capability of the models, providing a more reliable assessment of their performance. The trained models are evaluated across multiple dimensions, including Accuracy, F1 score,  Precision, Recall, and ROC-AUC. The performance of the models is presented in TABLE \ref{tab:performance}, where the Random Forest outperformed all other 16 models, achieving approximately 0.85 in various metrics. Consequently, we select the Random Forest model for the application of CFs techniques. Note that some evaluation metric values of the training set approach 1. However, this is attributed to the inherent nature of the small data, which is clean and devoid of anomalies or missing values. Additionally, the categorization of antidepressants is to some extent associated with the severity of depression, which in turn is measured by HAM-D scores. Hence, the model can readily acquire knowledge from the data.}}
+\textcolor{blue}{Using the leakage-free pipeline, we summarize performance in Table~\ref{tab:perf_summary} and Table~\ref{tab:balanced_metrics}: CatBoost and Random Forest achieved mean test ROC-AUC around 0.77 with accuracy ~0.70 across stratified folds, while GroupKFold scores were lower but still informative for assessing trial-level generalization. Balanced accuracy and class-wise metrics are derived from out-of-fold predictions, using the imbalanced class counts (347 SNRIs vs. 1121 SSRIs) to recover specificity from the reported precision/recall.}
 
 %, displaying the counts of true positive, true negative, false positive, and false negative predictions
-To further illustrate the effectiveness of the Random Forest model, we present the confusion matrix in Fig. \ref{fig2}, which offers a detailed breakdown of the model's prediction performance. Specifically, the matrix shows that out of 1121 instances of class 0 (SSRIs), the model correctly classified 931 instances, resulting in 190 false positives. For class 1 (SNRIs), the model correctly classified 974 out of 1121 instances, with 147 false negatives. This visualization provides deeper awareness of the model's strengths by highlighting its ability to correctly classify instances and identifying the types of errors it makes.
+\textcolor{red}{\sout{To further illustrate the effectiveness of the Random Forest model, we present the confusion matrix in Fig. \ref{fig2}, which offers a detailed breakdown of the model's prediction performance. Specifically, the matrix shows that out of 1121 instances of class 0 (SSRIs), the model correctly classified 931 instances, resulting in 190 false positives. For class 1 (SNRIs), the model correctly classified 974 out of 1121 instances, with 147 false negatives. This visualization provides deeper awareness of the model's strengths by highlighting its ability to correctly classify instances and identifying the types of errors it makes.}}
 
 
 
@@ -1039,19 +1045,23 @@ The Fig. \ref{fig4}(b) quantifies the specific degree of symptom impacts, V1-HAM
 \section{Discussion}
 % We explored the application of counterfactual reasoning in the selection of depression medication, focusing on both personalized and population level analyses. Our approach utilized CFs to investigate the causal relationships between HAM-D symptoms and the prescribed selection of medications (SSRIs/SNRIs). Our approach represents a significant stride towards integrating robust predictive models with interpretable counterfactual reasoning, offering insights to support clinical decision-making in depression treatment.
 
-We explore the application of counterfactual reasoning in the selection of depression medication, focusing on both personalized and population-level analyses. Our approach utilizes CFs to investigate the causal relationships between HAM-D symptoms and the prescribed selection of medications (SSRIs/SNRIs), representing a significant advancement in combining counterfactual reasoning with AI CDSSs.
+\textcolor{red}{\sout{We explore the application of counterfactual reasoning in the selection of depression medication, focusing on both personalized and population-level analyses. Our approach utilizes CFs to investigate the causal relationships between HAM-D symptoms and the prescribed selection of medications (SSRIs/SNRIs), representing a significant advancement in combining counterfactual reasoning with AI CDSSs.}}
+\textcolor{blue}{We explore counterfactual reasoning for depression treatment modeling at both personalized and population levels, treating CFs as hypotheses about how the model’s predicted RCT arm assignment would change under alternative symptom profiles. The analyses focus on learned associations rather than causal effects, aligning the work with explainability of AI predictions rather than direct treatment recommendation.}
 
 % A key strength of our approach is its ability to generate personalized insights through local feature importance analysis. By quantifying the relative influence of individual HAM-D symptoms on medication decisions for each patient, our approach assists clinicians to develop tailored treatment strategies that precisely target the most pertinent factors driving a specific case. This level of granularity aligns with the growing emphasis on precision medicine \cite{kosorok2019precision}, ensuring interventions are optimized for each individual's unique symptom manifestations.
 
 
 %This consideration enhances the clinical relevance and applicability of our approach, ensuring recommended treatment plans are not only theoretically sound but also feasible within the real clinical practice.
-A key strength of our approach is its ability to generate personalized insights through local feature importance analysis. By quantifying the relative influence of individual HAM-D symptoms on medication decisions for each patient, our approach assists clinicians to develop tailored treatment strategies that precisely target the most pertinent factors driving a specific case. Notably, our paper accounts for real-world constraints by generating counterfactual scenarios that accommodate practical limitations, such as the inability to modify certain symptoms due to patient-specific factors. Complementing this personalized perspective, our global feature importance analysis provides a comprehensive population level view on the relative significance of various depressive symptoms in guiding medication selections across the entire dataset. By bridging individual and population analyses, our approach offers a holistic understanding of these complex relationships.
+\textcolor{red}{\sout{A key strength of our approach is its ability to generate personalized insights through local feature importance analysis. By quantifying the relative influence of individual HAM-D symptoms on medication decisions for each patient, our approach assists clinicians to develop tailored treatment strategies that precisely target the most pertinent factors driving a specific case. Notably, our paper accounts for real-world constraints by generating counterfactual scenarios that accommodate practical limitations, such as the inability to modify certain symptoms due to patient-specific factors. Complementing this personalized perspective, our global feature importance analysis provides a comprehensive population level view on the relative significance of various depressive symptoms in guiding medication selections across the entire dataset. By bridging individual and population analyses, our approach offers a holistic understanding of these complex relationships.}}
+\textcolor{blue}{A key strength is the ability to summarize model behavior through local CF deltas and global rankings of symptom influence. CFs respect immutable or slow-to-change symptoms when generating alternatives, while aggregated importances indicate which HAM-D items most consistently shift the model’s SSRI versus SNRI prediction across the dataset. These insights are intended to generate clinically plausible hypotheses and to inform future AI clinical decision support design rather than to prescribe medications.}
+\textcolor{blue}{For expert-centered evaluation, a small panel of psychiatrists from our research team qualitatively reviewed a convenience subset of CF visualizations to judge clinical plausibility and alignment with known symptom–drug-class patterns; no formal inter-rater agreement statistics were collected, underscoring the need for larger structured validation.}
 
 % \textcolor{black}{The expert-centered evaluation conducted in our study demonstrated that the generated CFs provided realistic and meaningful insights that could inform alternative treatment decisions in clinical practice. Expert validation is crucial for ensuring the practical applicability of CFs, particularly in healthcare settings where clinical relevance and actionability are paramount \cite{arrieta2020explainable}.  Our global feature importance analysis further supported the validity of the generated counterfactuals by showing that symptoms such as "depressed mood" (HAM-D01) and "loss of sexual interest" (HAM-D14) were among the most influential in determining medication selection, whereas "weight loss" (HAM-D16) had minimal impact. This outcome aligns with clinical understanding and emphasizes the practical relevance of focusing on key symptoms that clinicians prioritize when making medication decisions \cite{carrozzino2020hamilton,rabinowitz2022consistency}}
 
 \textcolor{black}{It is well known that the overwhelming majority of choices in pharmacological management for depression remain SSRI’s and to a lesser extent SNRI’s. As such, investigating for factors that predict better outcome in these classes is sorely needed to help the pharmacologist match the patient to the appropriate medication. Furthermore, future datasets will include novel pharmacotherapeutics and as such, will be able to include these new agents as a comparator. Still, providing a baseline of how to separate what are appropriate choices in terms of SSRIs or SNRIs will allow for a comparison in the future of novel treatments to further help understand the pharmacodynamics of these new agents and specifically where they fit in the algorithm. Our hope is that the results of this work will be built off for future analyses that can ultimately come together to give a comprehensive understanding of who responds best (or worst) to which medication based on the causal relationship between symptoms and medication.  }
 
 \textcolor{black}{Despite the valuable insights presented in our study, there are some limitations. The dataset derived from clinical trials of specific medications may not fully represent all patient groups, and future studies should include a more diverse patient demographic and a broader range of antidepressant classes. Additionally, the computational complexity of our algorithm is relatively high, suggesting the need for further optimization to enhance its practicality in clinical settings.}
+\textcolor{blue}{We report 95\% bootstrap confidence intervals for primary metrics, but formal multiplicity correction across the 17-model comparison was not applied; therefore, small between-model differences should be interpreted cautiously. Moreover, the analysis is observational with no causal identification strategy, so all CF-based insights are hypothesis-generating.}
 
 % \textcolor{black}{It is well known that the overwhelming majority of choices in pharmacological management for depression remain SSRI’s and to a lesser extent SNRI’s. As such, examining for factors that predict better outcome in these classes is sorely needed to help the pharmacologist match the patient to the appropriate medication. And while is true it is important to note that in future, more datasets will include novel pharmacotherapeutics and as such, will be able to include these new agents as a comparator. Still, providing a baseline of how to separate what are appropriate choices in terms of SSRIs or SNRIs will allow for a comparison in the future of novel treatments to further help understand the pharmacodynamics of these new agents and specifically where they fit in the algorithm. Our hope is that the results of this work will be built off for future analyses that can ultimately come together to give a comprehensive understanding of who responds best (or worst) to which medication based on the causal relationship between symptoms and medication. }
 % % We may need relevant medical knowledge to support some viewpoints, such as what features have a significant impact on MDD, and how academic research is conducted
@@ -1063,7 +1073,8 @@ A key strength of our approach is its ability to generate personalized insights 
 
 
 \section{Conclusion}
-In this paper, we present a counterfactual reasoning approach based on explainable counterfactual reasoning to investigate the causal relationship between the HAM-D scales and the categories of anti-depressant medication prescribed by clinicians. Our method employs counterfactual scenarios to simulate causal relationships, elucidating not only the causal relationship but also deriving feature importance from the disparities between CFs and the original instances. In this case we found that “depressed mood” (HAM-D01) and “loss of sexual interest” (HAM-D14) were features that were most influential in determining medication selection, while “weight loss” (HAM-D16) was least important. This approach offers valuable AI CDSSs by providing interpretations into the causal relationships and feature importance underlying clinical decision-making process. By addressing both personalized and population level analyses, our approach enhances the ability to tailor treatments to individual patient needs while also understanding broader trends and patterns within the population.
+\textcolor{red}{\sout{In this paper, we present a counterfactual reasoning approach based on explainable counterfactual reasoning to investigate the causal relationship between the HAM-D scales and the categories of anti-depressant medication prescribed by clinicians. Our method employs counterfactual scenarios to simulate causal relationships, elucidating not only the causal relationship but also deriving feature importance from the disparities between CFs and the original instances. In this case we found that “depressed mood” (HAM-D01) and “loss of sexual interest” (HAM-D14) were features that were most influential in determining medication selection, while “weight loss” (HAM-D16) was least important. This approach offers valuable AI CDSSs by providing interpretations into the causal relationships and feature importance underlying clinical decision-making process. By addressing both personalized and population level analyses, our approach enhances the ability to tailor treatments to individual patient needs while also understanding broader trends and patterns within the population.}}
+\textcolor{blue}{In this paper, we present a proof-of-concept counterfactual reasoning framework that explains how a predictive model distinguishes SSRI versus SNRI RCT arms based on HAM-D symptoms. Counterfactual scenarios surface model-dependent associations and feature importance without claiming causal effects or prescribing clinician actions. Features such as depressed mood (HAM-D01) and loss of sexual interest (HAM-D14) most frequently shifted the model’s class prediction, whereas weight loss (HAM-D16) contributed least in the analyzed runs. The framework is intended to inform future AI clinical decision support development and hypothesis generation, with prospective validation and broader datasets needed before any deployment.}
 
 % \section{Acknowledgment}
 
