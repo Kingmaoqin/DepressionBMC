@@ -1,27 +1,21 @@
-"""Produce paper-ready tables from `final_robust_analysis_results1204`.
+"""Produce paper-ready tables from `final_robust_analysis_results1204` without external deps.
 
-The current manuscript needs two focused tables:
-1) A "big table" covering only the symptom-score feature set under the
-   V2_Exclusive labeling scheme with SMOTE enabled and standard
-   StratifiedKFold CV, listing every model configuration aggregated
-   across seeds.
-2) A separate table for grouped CV results (GroupKFold) under the same
-   scheme/feature/SMOTE filter so grouped performance can be optionally
-   reported.
+Outputs:
+1) StratifiedKFold results under V2_Exclusive + Symptoms_Only + SMOTE=True
+2) GroupKFold results under the same filter (optional reporting)
 
-This script generates those tables (CSV + LaTeX) in
-`paper_ready_results/` for direct manuscript inclusion.
+Each table aggregates metrics across seeds for every model and is exported as CSV and
+basic LaTeX for manuscript inclusion. Standard library only (csv/statistics/pathlib).
 """
 from __future__ import annotations
 
+import csv
+import statistics
 from pathlib import Path
-from typing import Tuple
-
-import pandas as pd
+from typing import Dict, Iterable, List, Tuple
 
 DATA_FILE = Path("final_robust_analysis_results1204")
 OUTPUT_DIR = Path("paper_ready_results")
-
 
 PRIMARY_COLS = [
     "Test_AUC",
@@ -34,29 +28,89 @@ PRIMARY_COLS = [
 ]
 
 
-def load_results(filepath: Path) -> pd.DataFrame:
-    """Load the results CSV with consistent dtypes."""
-    df = pd.read_csv(filepath, encoding="utf-8-sig")
-    df.columns = [c.strip() for c in df.columns]
-    numeric_cols = [c for c in df.columns if c not in {"Seed", "Scheme", "Feature_Set", "SMOTE", "CV_Type", "Model"}]
-    df[numeric_cols] = df[numeric_cols].apply(pd.to_numeric, errors="coerce")
-    df["SMOTE"] = df["SMOTE"].astype(str).str.lower().map({"true": True, "false": False})
-    return df
+def _to_bool(value: str) -> bool:
+    return str(value).strip().lower() == "true"
 
 
-def filter_slice(df: pd.DataFrame, cv_type: str) -> pd.DataFrame:
-    """Filter to V2 + SMOTE + symptom scores for a specific CV type."""
-    return df[
-        (df["Scheme"] == "V2_Exclusive")
-        & (df["Feature_Set"] == "Symptoms_Only")
-        & (df["SMOTE"] == True)
-        & (df["CV_Type"] == cv_type)
-    ].copy()
+def _to_float(value: str) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return float("nan")
 
 
-def aggregate_models(df: pd.DataFrame) -> pd.DataFrame:
-    """Aggregate metrics across seeds for each model."""
-    ordered_cols = [
+def load_results(filepath: Path) -> List[Dict[str, object]]:
+    """Load CSV rows as dictionaries with typed numeric fields."""
+    rows: List[Dict[str, object]] = []
+    with filepath.open("r", encoding="utf-8-sig", newline="") as f:
+        reader = csv.DictReader(f)
+        for raw in reader:
+            rec: Dict[str, object] = {k.strip(): v for k, v in raw.items()}
+            rec["Seed"] = rec.get("Seed")
+            rec["Scheme"] = rec.get("Scheme")
+            rec["Feature_Set"] = rec.get("Feature_Set")
+            rec["SMOTE"] = _to_bool(rec.get("SMOTE", "False"))
+            rec["CV_Type"] = rec.get("CV_Type")
+            rec["Model"] = rec.get("Model")
+            for col in PRIMARY_COLS + [
+                "Test_Acc_CI_Low",
+                "Test_Acc_CI_High",
+                "Test_F1_CI_Low",
+                "Test_F1_CI_High",
+                "Test_Prec_CI_Low",
+                "Test_Prec_CI_High",
+                "Test_Recall_CI_Low",
+                "Test_Recall_CI_High",
+            ]:
+                rec[col] = _to_float(rec.get(col, "nan"))
+            rows.append(rec)
+    return rows
+
+
+def filter_slice(rows: Iterable[Dict[str, object]], cv_type: str) -> List[Dict[str, object]]:
+    return [
+        r
+        for r in rows
+        if r.get("Scheme") == "V2_Exclusive"
+        and r.get("Feature_Set") == "Symptoms_Only"
+        and bool(r.get("SMOTE"))
+        and r.get("CV_Type") == cv_type
+    ]
+
+
+def _mean(values: List[float]) -> float:
+    return sum(values) / len(values) if values else float("nan")
+
+
+def _std(values: List[float]) -> float:
+    return statistics.stdev(values) if len(values) > 1 else 0.0
+
+
+def aggregate_models(rows: List[Dict[str, object]]) -> List[Dict[str, object]]:
+    if not rows:
+        return []
+
+    grouped: Dict[str, List[Dict[str, object]]] = {}
+    for r in rows:
+        grouped.setdefault(r["Model"], []).append(r)
+
+    table: List[Dict[str, object]] = []
+    for model, entries in grouped.items():
+        record: Dict[str, object] = {"Model": model, "runs": len({e.get("Seed") for e in entries})}
+        for col in PRIMARY_COLS:
+            vals = [_to_float(e.get(col, float("nan"))) for e in entries]
+            record[f"{col.lower()}_mean"] = _mean(vals)
+            if not col.endswith("CI_Low") and not col.endswith("CI_High"):
+                record[f"{col.lower()}_std"] = _std(vals)
+        record["AUC_with_CI"] = "{:.3f} ± {:.3f} (CI {:.3f}–{:.3f})".format(
+            record.get("test_auc_mean", float("nan")),
+            record.get("test_auc_std", float("nan")),
+            record.get("test_auc_ci_low_mean", float("nan")),
+            record.get("test_auc_ci_high_mean", float("nan")),
+        )
+        table.append(record)
+
+    order = [
         "Model",
         "runs",
         "test_auc_mean",
@@ -69,67 +123,76 @@ def aggregate_models(df: pd.DataFrame) -> pd.DataFrame:
         "test_recall_mean",
         "AUC_with_CI",
     ]
-
-    if df.empty:
-        return pd.DataFrame(columns=ordered_cols)
-
-    grouped = (
-        df.groupby("Model")
-        .agg(
-            runs=("Seed", "nunique"),
-            **{f"{col.lower()}_mean": (col, "mean") for col in PRIMARY_COLS},
-            **{f"{col.lower()}_std": (col, "std") for col in PRIMARY_COLS if not col.endswith("CI_Low") and not col.endswith("CI_High")},
-        )
-        .reset_index()
-    )
-
-    for col in grouped.columns:
-        if col.endswith(("_mean", "_std")):
-            grouped[col] = grouped[col].round(3)
-    grouped["AUC_with_CI"] = grouped.apply(
-        lambda r: f"{r['test_auc_mean']:.3f} ± {r['test_auc_std']:.3f} (CI {r['test_auc_ci_low_mean']:.3f}–{r['test_auc_ci_high_mean']:.3f})",
-        axis=1,
-    )
-    return grouped[ordered_cols].sort_values("test_auc_mean", ascending=False).reset_index(drop=True)
+    for rec in table:
+        for key in list(rec.keys()):
+            if key.endswith(("_mean", "_std")) and isinstance(rec[key], float):
+                rec[key] = round(rec[key], 3)
+    return sorted(table, key=lambda r: r.get("test_auc_mean", 0), reverse=True), order
 
 
-def export_table(df: pd.DataFrame, stem: str, caption: str, label: str) -> None:
-    """Write CSV + LaTeX versions of a table."""
+def export_table(rows: List[Dict[str, object]], columns: List[str], stem: str, caption: str, label: str) -> None:
     OUTPUT_DIR.mkdir(exist_ok=True)
     csv_path = OUTPUT_DIR / f"{stem}.csv"
     tex_path = OUTPUT_DIR / f"{stem}.tex"
-    df.to_csv(csv_path, index=False)
-    df.to_latex(
-        tex_path,
-        index=False,
-        float_format="{:.3f}".format,
-        caption=caption,
-        label=label,
-    )
+
+    with csv_path.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(columns)
+        for r in rows:
+            writer.writerow([r.get(col, "") for col in columns])
+
+    with tex_path.open("w", encoding="utf-8") as f:
+        f.write("\\begin{table}[!htbp]\n")
+        f.write("  \\centering\n")
+        f.write(f"  \\caption{{{caption}}}\n")
+        f.write(f"  \\label{{{label}}}\n")
+        f.write("  \\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|}\n")
+        f.write("    \\hline\n")
+        f.write("    Model & Runs & AUC & AUC SD & CI Low & CI High & Acc & F1 & Prec & Recall \\\\ \hline\n")
+        for r in rows:
+            f.write(
+                "    {} & {} & {:.3f} & {:.3f} & {:.3f} & {:.3f} & {:.3f} & {:.3f} & {:.3f} & {:.3f} \\\\ \hline\n".format(
+                    r.get("Model", ""),
+                    r.get("runs", ""),
+                    r.get("test_auc_mean", float("nan")),
+                    r.get("test_auc_std", float("nan")),
+                    r.get("test_auc_ci_low_mean", float("nan")),
+                    r.get("test_auc_ci_high_mean", float("nan")),
+                    r.get("test_acc_mean", float("nan")),
+                    r.get("test_f1_mean", float("nan")),
+                    r.get("test_prec_mean", float("nan")),
+                    r.get("test_recall_mean", float("nan")),
+                )
+            )
+        f.write("  \\end{tabular}\n")
+        f.write("\\end{table}\n")
+
     print(f"[INFO] Saved {csv_path} and {tex_path}")
 
 
-def build_tables(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
-    """Create the stratified (main) and grouped tables."""
-    strat_df = filter_slice(df, cv_type="StratifiedKFold")
-    group_df = filter_slice(df, cv_type="GroupKFold")
-    return aggregate_models(strat_df), aggregate_models(group_df)
+def build_tables(rows: List[Dict[str, object]]) -> Tuple[Tuple[List[Dict[str, object]], List[str]], Tuple[List[Dict[str, object]], List[str]]]:
+    strat_rows = filter_slice(rows, cv_type="StratifiedKFold")
+    group_rows = filter_slice(rows, cv_type="GroupKFold")
+    strat_table, cols = aggregate_models(strat_rows)
+    group_table, _ = aggregate_models(group_rows)
+    return (strat_table, cols), (group_table, cols)
 
 
 def main() -> None:
-    df = load_results(DATA_FILE)
-    strat_table, group_table = build_tables(df)
-
+    rows = load_results(DATA_FILE)
+    (strat_table, cols), (group_table, _) = build_tables(rows)
     export_table(
         strat_table,
+        columns=cols,
         stem="v2_smote_symptoms_stratified",
-        caption="All models under V2_Exclusive with symptom scores, SMOTE, StratifiedKFold",
+        caption="V2_Exclusive + Symptoms_Only with SMOTE (StratifiedKFold)",
         label="tab:v2_smote_symptoms_stratified",
     )
     export_table(
         group_table,
+        columns=cols,
         stem="v2_smote_symptoms_group",
-        caption="GroupKFold results under V2_Exclusive with symptom scores and SMOTE",
+        caption="V2_Exclusive + Symptoms_Only with SMOTE (GroupKFold)",
         label="tab:v2_smote_symptoms_group",
     )
 
