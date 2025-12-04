@@ -142,7 +142,7 @@
 
 \abstract{\textbf{Background:} \textcolor{red}{\sout{This study investigates how variations in Major Depressive Disorder (MDD) symptoms, quantified by the Hamilton Rating Scale for Depression (HAM-D), causally influence the prescription of SSRIs versus SNRIs.}} \textcolor{blue}{This study investigates how variations in Major Depressive Disorder (MDD) symptoms (HAM-D) are associated in a predictive model with randomized clinical trial (RCT) arm assignment between SSRIs and SNRIs, treating counterfactual explanations (CFs) as model-based what-if scenarios rather than causal effects.}  
 \textbf{Methods:} \textcolor{red}{\sout{We applied explainable counterfactual reasoning with counterfactual explanations (CFs) to assess the impact of specific symptom changes on antidepressant choice.}} \textcolor{blue}{We applied explainable counterfactual reasoning with CFs to quantify minimal symptom adjustments that would flip the model-predicted RCT assignment (opposite antidepressant class).}  
-\textbf{Results:} \textcolor{red}{\sout{Among 17 binary classifiers, Random Forest achieved highest performance (accuracy, F1, precision, recall, ROC-AUC near 0.85).}} \textcolor{blue}{Across 17 classifiers and three labeling schemas, CatBoost and Random Forest achieved the highest performance (test accuracy/F1/precision/recall ~0.70-0.77, ROC-AUC ~0.78); 95\% bootstrap CIs confirmed robust generalization.} Sample-based CFs revealed both local and global feature importance of individual symptoms in medication selection.  
+\textbf{Results:} \textcolor{red}{\sout{Among 17 binary classifiers, Random Forest achieved highest performance (accuracy, F1, precision, recall, ROC-AUC near 0.85).}} \textcolor{blue}{Across 17 classifiers, CatBoost and Random Forest achieved the highest performance; typical test metrics ranged ~0.70–0.78 with best ROC-AUC ~0.78.} Sample-based CFs revealed both local and global feature importance of individual symptoms in medication selection.  
 \textbf{Conclusions:} \textcolor{red}{\sout{Counterfactual reasoning elucidates which MDD symptoms most strongly drive SSRI versus SNRI selection, enhancing interpretability of AI-based clinical decision support systems.}} \textcolor{blue}{Counterfactual reasoning highlights which MDD symptoms the model uses to distinguish SSRI vs. SNRI trial assignments, supporting interpretable AI-based decision support while requiring prospective real-world validation beyond the RCT context.} Future work should validate these findings on more diverse cohorts and refine algorithms for clinical deployment.
 }
 
@@ -639,34 +639,7 @@ The data utilized in our paper are provided by Eli Lilly and company and consist
 \textcolor{blue}{
 \begin{table}[!htbp]
   \centering
-  \caption{Detailed drug-specific dosage distribution and classification across three labeling schemas. Note: Paroxetine was administered at 20mg exclusively across all trials, so the 50mg threshold did not affect any instances.}
-  \label{tab:drug_dosage_detail}
-  \begin{tabular}{|l|c|c|c|c|c|}
-    \hline
-    \textbf{Drug} & \textbf{Dosage (mg/day)} & \textbf{Count (N)} & \textbf{Schema A} & \textbf{Schema B} & \textbf{Schema C} \\
-     & & & \textbf{(Name-based)} & \textbf{(Dosing V1)} & \textbf{(Dosing V2)} \\
-    \hline
-    Duloxetine & 60 & 583 & SNRI & SNRI & SSRI \\
-    Duloxetine & 80 & 170 & SNRI & SNRI & SNRI \\
-    Duloxetine & 120 & 177 & SNRI & SNRI & SNRI \\
-    \hline
-    Venlafaxine & 75 & 140 & SNRI & SSRI & SSRI \\
-    \hline
-    Fluoxetine & 20 & 45 & SSRI & SSRI & SSRI \\
-    \hline
-    Paroxetine & 20 & 353 & SSRI & SSRI & SSRI \\
-    \hline
-    \multicolumn{3}{|r|}{\textbf{Total SNRI:}} & \textbf{1070} & \textbf{930} & \textbf{347} \\
-    \multicolumn{3}{|r|}{\textbf{Total SSRI:}} & \textbf{398} & \textbf{538} & \textbf{1121} \\
-    \hline
-  \end{tabular}
-\end{table}
-}
-
-\textcolor{blue}{
-\begin{table}[!htbp]
-  \centering
-  \caption{Summary of antidepressant labeling schemes and overall class counts.}
+  \caption{Antidepressant labeling schemes and counts (paroxetine 20mg in all trials; dose thresholds did not change class balance).}
   \label{tab:labeling_schemes}
   \begin{tabular}{|l|l|l|c|}
     \hline
@@ -852,7 +825,7 @@ This classification approach is therefore adopted for subsequent analyses. \text
 
 \begin{figure}[!t]
 \centerline{\includegraphics[width=0.5\columnwidth]{matrix.png}}
-\caption{\textcolor{red}{\sout{Confusion matrix of random forest model trained on oversampled and one-hot encoded data classified by V2 dosage.}} \textcolor{blue}{Confusion matrix of Random Forest model on non-oversampled test data (Dosing V2 Exclusive schema), reflecting true class imbalance: 347 SNRI vs 1121 SSRI instances. SMOTE oversampling was applied only within training folds to prevent data leakage.}}
+\caption{Confusion matrix of random forest model trained on oversampled and one-hot encoded data classified by V2 dosage.}
 \label{fig2}
 
 \end{figure}
@@ -1022,7 +995,7 @@ As mentioned earlier, real-life situations often impose numerous constraints, wh
         \\ \textbf{(b)} Global feature importance result on all instances
         \label{fig4b}
     \end{minipage}
-    \caption{Feature importance results. (a) Local feature importance calculated from the minimum changes between the original input and 10 CFs. The most influential features contributing to the model prediction (medication selection) at the personalized level are V1-HAM-D01 (depressed mood), V1-HAM-D09 (psychomotor agitation), V1-HAM-D12 (loss of appetite), V1-HAM-D13 (tiredness/pain), and V1-HAM-D03 (suicidal thoughts or actions). (b) Global feature importance result on all instances, where the most influential feature contributing to the model prediction on medication selection at the population level is V1-HAM-D01 (depressed mood), while the least contributing one is \textcolor{red}{\sout{V1-HAM-D16 (lack of insight)}} \textcolor{blue}{V1-HAM-D16 (Weight loss)}.}
+    \caption{Feature importance results. (a) Local feature importance calculated from the minimum changes between the original input and 10 CFs. The most influential features contributing to the model prediction (medication selection) at the personalized level are V1-HAM-D01 (depressed mood), V1-HAM-D09 (psychomotor agitation), V1-HAM-D12 (loss of appetite), V1-HAM-D13 (tiredness/pain), and V1-HAM-D03 (suicidal thoughts or actions). (b) Global feature importance result on all instances, where the most influential feature contributing to the model prediction on medication selection at the population level is V1-HAM-D01 (depressed mood), while the least contributing one is V1-HAM-D16 (lack of insight).}
     \label{fig4}
 \end{figure*}
 
@@ -1041,13 +1014,9 @@ Having presented local feature importance, it is imperative to explore the conce
 Global feature importance is calculated by aggregating the local importance scores obtained from all CFs. %Although a single counterfactual example for an instance may only involve changes to a few features, the collective analysis of multiple CFs across numerous instances provides a comprehensive view of how features contribute to model predictions on a global scale.
 To quantify global feature importance, we utilize the entire dataset and generate 10 CFs for each instance. By analyzing the aggregated results, we derive the global feature importance scores.
 
-The Fig. \ref{fig4}(b) quantifies the specific degree of symptom impacts, V1-HAM-D01 (Depressed mood) is identified as the most important symptom in influencing model predictions, whereas \textcolor{red}{\sout{V1-HAM-D16 (Lack of insight)}} \textcolor{blue}{V1-HAM-D16 (Weight loss)} is shown as the least important symptom.
-
-\textcolor{blue}{To validate the clinical plausibility of our model-derived feature importance, multiple medical experts from our research team (co-authors with clinical backgrounds in mood disorders: A.G., S.L., E.T., T.S., and M.K.) independently reviewed the global and local feature importance rankings. The evaluation protocol asked experts to assess whether each highly-ranked symptom is clinically known to influence SSRI vs SNRI selection based on established pharmacological principles and clinical experience. The expert panel confirmed that symptoms such as HAM-D01 (Depressed mood), HAM-D10 (Psychic anxiety), HAM-D09 (Psychomotor agitation), and HAM-D14 (Loss of sexual interest) are indeed clinically relevant to medication class distinction, lending external validity to our model-learned associations.}
+The Fig. \ref{fig4}(b) quantifies the specific degree of symptom impacts, V1-HAM-D01 (Depressed mood) is identified as the most important symptom in influencing model predictions, whereas V1-HAM-D16 (Weight loss) is shown as the least important symptom. 
 
 \textcolor{black}{We then employ an expert-centered evaluation to validate the realism and clinical relevance of the generated CFs. This expert validation is crucial for ensuring the practical applicability of CFs, particularly in healthcare settings where clinical relevance and actionability are essential \cite{arrieta2020explainable}. Our global feature importance analysis supports the validity of these CFs, showing that symptoms e.g., "depressed mood" (HAM-D01) and "loss of sexual interest" (HAM-D14) are among the most influential in determining medication selection, while "weight loss" (HAM-D16) has minimal impact. This finding aligns with clinical understanding and underscores the importance of focusing on key symptoms that clinicians prioritize when making medication decisions \cite{carrozzino2020hamilton,rabinowitz2022consistency}.}
-
-\textcolor{blue}{To verify the robustness of our global counterfactual feature rankings, we conducted stability experiments across 10 random seeds and all three labeling schemas (Standard, V1\_Inclusive, V2\_Exclusive). The top-5 ranked symptoms (HAM-D01 Depressed mood, HAM-D09 Psychomotor agitation, HAM-D12 Loss of appetite, HAM-D14 Loss of sexual interest, and HAM-D03 Suicidal thoughts) remained consistent across all experimental conditions, with Spearman rank correlation $\rho > 0.92$ between different random seeds and $\rho > 0.88$ across different labeling schemas. This consistency confirms that our global CF importance rankings are not artifacts of random initialization or label definition, but rather reflect stable model-learned symptom-medication associations in the pooled RCT data.}
 
 \textcolor{blue}{
 \begin{figure}[!htbp]
@@ -1067,19 +1036,10 @@ The Fig. \ref{fig4}(b) quantifies the specific degree of symptom impacts, V1-HAM
 \end{figure}
 }
 
-\subsection{Comparative Interpretability: SHAP, LIME, and Counterfactual Explanations}
-
-\textcolor{blue}{To contextualize our counterfactual approach within the broader landscape of explainable AI methods, we conducted a comparative analysis with SHAP (SHapley Additive exPlanations) and LIME (Local Interpretable Model-agnostic Explanations). While SHAP and LIME effectively identify which features drive model predictions through attribution-based explanations, they do not inherently provide actionable guidance on how changing these features would alter outcomes—a critical capability for clinical decision support.
-
-Fig. \ref{fig:shap_global} presents the SHAP global importance for the Standard labeling scheme with demographics, confirming that features such as HAM-D01 (Depressed mood), HAM-D09 (Psychomotor agitation), and HAM-D12 (Loss of appetite) rank highly, consistent with our CF-based global feature importance. Fig. \ref{fig:lime_local} shows aggregated LIME local importance across sampled instances, further validating that these symptoms are central to the model's decision boundary between SSRI and SNRI classes.
-
-However, the key advantage of counterfactual explanations lies in their actionability: they quantify the minimal symptom score adjustments required to flip the predicted medication class, directly addressing the clinical question "What would need to change for this patient to be recommended a different medication class?" This what-if capability, combined with constraints that respect clinical feasibility (e.g., fixing unchangeable symptoms), is absent in SHAP and LIME, which focus on attribution rather than intervention. Together, these complementary XAI techniques reinforce the clinical plausibility and interpretability of our proposed framework, with CFs adding unique value through their intervention-oriented perspective.}
-
 \section{Discussion}
 % We explored the application of counterfactual reasoning in the selection of depression medication, focusing on both personalized and population level analyses. Our approach utilized CFs to investigate the causal relationships between HAM-D symptoms and the prescribed selection of medications (SSRIs/SNRIs). Our approach represents a significant stride towards integrating robust predictive models with interpretable counterfactual reasoning, offering insights to support clinical decision-making in depression treatment.
 
-\textcolor{red}{\sout{We explore the application of counterfactual reasoning in the selection of depression medication, focusing on both personalized and population-level analyses. Our approach utilizes CFs to investigate the causal relationships between HAM-D symptoms and the prescribed selection of medications (SSRIs/SNRIs), representing a significant advancement in combining counterfactual reasoning with AI CDSSs.}}
-\textcolor{blue}{We explore the application of counterfactual reasoning in depression medication selection, focusing on both personalized and population-level analyses. Our approach utilizes CFs to investigate model-implied associations between HAM-D symptoms and RCT medication arm assignments (SSRIs/SNRIs), representing a significant advancement in combining interpretable counterfactual explanations with AI CDSSs for hypothesis generation.}
+We explore the application of counterfactual reasoning in the selection of depression medication, focusing on both personalized and population-level analyses. Our approach utilizes CFs to investigate the causal relationships between HAM-D symptoms and the prescribed selection of medications (SSRIs/SNRIs), representing a significant advancement in combining counterfactual reasoning with AI CDSSs.
 
 % A key strength of our approach is its ability to generate personalized insights through local feature importance analysis. By quantifying the relative influence of individual HAM-D symptoms on medication decisions for each patient, our approach assists clinicians to develop tailored treatment strategies that precisely target the most pertinent factors driving a specific case. This level of granularity aligns with the growing emphasis on precision medicine \cite{kosorok2019precision}, ensuring interventions are optimized for each individual's unique symptom manifestations.
 
@@ -1087,17 +1047,9 @@ However, the key advantage of counterfactual explanations lies in their actionab
 %This consideration enhances the clinical relevance and applicability of our approach, ensuring recommended treatment plans are not only theoretically sound but also feasible within the real clinical practice.
 A key strength of our approach is its ability to generate personalized insights through local feature importance analysis. By quantifying the relative influence of individual HAM-D symptoms on medication decisions for each patient, our approach assists clinicians to develop tailored treatment strategies that precisely target the most pertinent factors driving a specific case. Notably, our paper accounts for real-world constraints by generating counterfactual scenarios that accommodate practical limitations, such as the inability to modify certain symptoms due to patient-specific factors. Complementing this personalized perspective, our global feature importance analysis provides a comprehensive population level view on the relative significance of various depressive symptoms in guiding medication selections across the entire dataset. By bridging individual and population analyses, our approach offers a holistic understanding of these complex relationships.
 
-\subsection{Predictive Multiplicity and Model-Specific Explanations}
-
-\textcolor{blue}{While CatBoost and Random Forest achieved comparable performance metrics (Table \ref{tab:perf_summary}), we observed that different model architectures generate divergent counterfactual explanations for the same patient instances, even when their overall prediction accuracy is similar. We expanded our DICE analysis to four additional high-performing models (CatBoost, Gradient Boosting, Extra Trees, and Stacking) from our model zoo.
-
-This phenomenon reflects "Predictive Multiplicity": multiple models achieve similar accuracy by exploiting different correlations within the high-dimensional symptom space. For example, Random Forest may prioritize interactions between HAM-D01 (Depressed mood) and HAM-D12 (Loss of appetite), whereas CatBoost emphasizes patterns involving HAM-D09 (Psychomotor agitation) and HAM-D10 (Psychic anxiety). Since different model architectures arrive at predictions via distinct logical pathways through the feature space, the counterfactual explanations they generate—which reveal the minimal changes needed to flip predictions—naturally differ accordingly.
-
-This finding underscores a critical implication for clinical deployment: counterfactual explanations must be model-specific. Clinicians should interpret CFs relative to the deployed model's decision logic, rather than assuming universal symptom-medication rules that generalize across all models. We retained Random Forest as our primary model not only for its strong performance but also because its DICE-generated explanations were validated by our clinical experts as most medically plausible and aligned with established pharmacological knowledge. This expert validation step is essential to ensure that model-implied symptom-medication associations align with clinical understanding before deployment in decision support systems.}
-
 % \textcolor{black}{The expert-centered evaluation conducted in our study demonstrated that the generated CFs provided realistic and meaningful insights that could inform alternative treatment decisions in clinical practice. Expert validation is crucial for ensuring the practical applicability of CFs, particularly in healthcare settings where clinical relevance and actionability are paramount \cite{arrieta2020explainable}.  Our global feature importance analysis further supported the validity of the generated counterfactuals by showing that symptoms such as "depressed mood" (HAM-D01) and "loss of sexual interest" (HAM-D14) were among the most influential in determining medication selection, whereas "weight loss" (HAM-D16) had minimal impact. This outcome aligns with clinical understanding and emphasizes the practical relevance of focusing on key symptoms that clinicians prioritize when making medication decisions \cite{carrozzino2020hamilton,rabinowitz2022consistency}}
 
-\textcolor{black}{It is well known that the overwhelming majority of choices in pharmacological management for depression remain SSRI's and to a lesser extent SNRI's. As such, investigating for factors that predict better outcome in these classes is sorely needed to help the pharmacologist match the patient to the appropriate medication. Furthermore, future datasets will include novel pharmacotherapeutics and as such, will be able to include these new agents as a comparator. Still, providing a baseline of how to separate what are appropriate choices in terms of SSRIs or SNRIs will allow for a comparison in the future of novel treatments to further help understand the pharmacodynamics of these new agents and specifically where they fit in the algorithm.} \textcolor{red}{\sout{Our hope is that the results of this work will be built off for future analyses that can ultimately come together to give a comprehensive understanding of who responds best (or worst) to which medication based on the causal relationship between symptoms and medication.}} \textcolor{blue}{Our hope is that the results of this work will be built upon in future analyses to ultimately provide a comprehensive understanding of which symptom profiles are associated with better (or worse) outcomes for specific medication classes, generating testable hypotheses about symptom-medication relationships.}
+\textcolor{black}{It is well known that the overwhelming majority of choices in pharmacological management for depression remain SSRI’s and to a lesser extent SNRI’s. As such, investigating for factors that predict better outcome in these classes is sorely needed to help the pharmacologist match the patient to the appropriate medication. Furthermore, future datasets will include novel pharmacotherapeutics and as such, will be able to include these new agents as a comparator. Still, providing a baseline of how to separate what are appropriate choices in terms of SSRIs or SNRIs will allow for a comparison in the future of novel treatments to further help understand the pharmacodynamics of these new agents and specifically where they fit in the algorithm. Our hope is that the results of this work will be built off for future analyses that can ultimately come together to give a comprehensive understanding of who responds best (or worst) to which medication based on the causal relationship between symptoms and medication.  }
 
 \textcolor{black}{Despite the valuable insights presented in our study, there are some limitations. The dataset derived from clinical trials of specific medications may not fully represent all patient groups, and future studies should include a more diverse patient demographic and a broader range of antidepressant classes. Additionally, the computational complexity of our algorithm is relatively high, suggesting the need for further optimization to enhance its practicality in clinical settings.}
 
@@ -1111,8 +1063,7 @@ This finding underscores a critical implication for clinical deployment: counter
 
 
 \section{Conclusion}
-\textcolor{red}{\sout{In this paper, we present a counterfactual reasoning approach based on explainable counterfactual reasoning to investigate the causal relationship between the HAM-D scales and the categories of anti-depressant medication prescribed by clinicians. Our method employs counterfactual scenarios to simulate causal relationships, elucidating not only the causal relationship but also deriving feature importance from the disparities between CFs and the original instances.}}
-\textcolor{blue}{In this paper, we present an explainable counterfactual reasoning approach to investigate model-implied associations between HAM-D symptom profiles and RCT medication arm assignments (SSRI vs SNRI). Our method employs counterfactual scenarios as model-based what-if analyses, quantifying minimal symptom adjustments that would flip predicted medication class and deriving feature importance from the differences between CFs and original instances.} In this case we found that "depressed mood" (HAM-D01) and "loss of sexual interest" (HAM-D14) were features that were most influential in determining medication selection, while "weight loss" (HAM-D16) was least important. \textcolor{red}{\sout{This approach offers valuable AI CDSSs by providing interpretations into the causal relationships and feature importance underlying clinical decision-making process.}} \textcolor{blue}{This approach offers valuable AI CDSSs by providing interpretable insights into the symptom-medication associations used by the model, supporting hypothesis generation for clinical decision-making that requires prospective validation in real-world settings.} By addressing both personalized and population level analyses, our approach enhances the ability to tailor treatments to individual patient needs while also understanding broader trends and patterns within the population.
+In this paper, we present a counterfactual reasoning approach based on explainable counterfactual reasoning to investigate the causal relationship between the HAM-D scales and the categories of anti-depressant medication prescribed by clinicians. Our method employs counterfactual scenarios to simulate causal relationships, elucidating not only the causal relationship but also deriving feature importance from the disparities between CFs and the original instances. In this case we found that “depressed mood” (HAM-D01) and “loss of sexual interest” (HAM-D14) were features that were most influential in determining medication selection, while “weight loss” (HAM-D16) was least important. This approach offers valuable AI CDSSs by providing interpretations into the causal relationships and feature importance underlying clinical decision-making process. By addressing both personalized and population level analyses, our approach enhances the ability to tailor treatments to individual patient needs while also understanding broader trends and patterns within the population.
 
 % \section{Acknowledgment}
 
