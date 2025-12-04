@@ -1,0 +1,25 @@
+\begin{table}[!htbp]
+  \centering
+  \caption{V2_Exclusive + Symptoms_Only with SMOTE (StratifiedKFold)}
+  \label{tab:v2_smote_symptoms_stratified}
+  \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|}
+    \hline
+    Model & Runs & AUC & AUC SD & CI Low & CI High & Acc & F1 & Prec & Recall \\ \hline
+    CatBoost & 3 & 0.755 & 0.001 & 0.734 & 0.775 & 0.779 & 0.760 & 0.756 & 0.779 \\ \hline
+    ExtraTrees & 3 & 0.747 & 0.000 & 0.731 & 0.764 & 0.735 & 0.745 & 0.761 & 0.735 \\ \hline
+    GradientBoosting & 3 & 0.743 & 0.002 & 0.731 & 0.758 & 0.763 & 0.749 & 0.742 & 0.763 \\ \hline
+    RandomForest & 3 & 0.739 & 0.003 & 0.730 & 0.750 & 0.739 & 0.742 & 0.746 & 0.739 \\ \hline
+    HistGradientBoosting & 3 & 0.735 & 0.005 & 0.717 & 0.753 & 0.758 & 0.747 & 0.741 & 0.758 \\ \hline
+    RBF_SVM & 3 & 0.724 & 0.004 & 0.694 & 0.750 & 0.719 & 0.729 & 0.745 & 0.719 \\ \hline
+    Voting & 3 & 0.720 & 0.008 & 0.696 & 0.742 & 0.705 & 0.716 & 0.735 & 0.705 \\ \hline
+    Stacking & 3 & 0.716 & 0.007 & 0.690 & 0.740 & 0.716 & 0.724 & 0.736 & 0.716 \\ \hline
+    KNN & 3 & 0.712 & 0.006 & 0.680 & 0.739 & 0.569 & 0.598 & 0.753 & 0.569 \\ \hline
+    NaiveBayes & 3 & 0.705 & 0.003 & 0.686 & 0.725 & 0.656 & 0.680 & 0.739 & 0.656 \\ \hline
+    QDA & 3 & 0.701 & 0.003 & 0.679 & 0.728 & 0.675 & 0.695 & 0.735 & 0.675 \\ \hline
+    AdaBoost & 3 & 0.700 & 0.002 & 0.689 & 0.712 & 0.678 & 0.697 & 0.741 & 0.678 \\ \hline
+    MLP & 3 & 0.692 & 0.012 & 0.662 & 0.726 & 0.717 & 0.722 & 0.729 & 0.717 \\ \hline
+    LogisticRegression & 3 & 0.688 & 0.001 & 0.679 & 0.693 & 0.651 & 0.675 & 0.735 & 0.651 \\ \hline
+    Linear_SVM & 3 & 0.687 & 0.002 & 0.680 & 0.693 & 0.639 & 0.665 & 0.736 & 0.639 \\ \hline
+    DecisionTree & 3 & 0.640 & 0.010 & 0.614 & 0.664 & 0.619 & 0.644 & 0.720 & 0.619 \\ \hline
+  \end{tabular}
+\end{table}
