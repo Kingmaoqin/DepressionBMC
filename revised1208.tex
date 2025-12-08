@@ -1,0 +1,1144 @@
+%Version 3.1 December 2024
+% See section 11 of the User Manual for version history
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                                 %%
+%% Please do not use \input{...} to include other tex files.       %%
+%% Submit your LaTeX manuscript as one .tex document.              %%
+%%                                                                 %%
+%% All additional figures and files should be attached             %%
+%% separately and not embedded in the \TeX\ document itself.       %%
+%%                                                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%\documentclass[referee,sn-basic]{sn-jnl}% referee option is meant for double line spacing
+
+%%=======================================================%%
+%% to print line numbers in the margin use lineno option %%
+%%=======================================================%%
+
+%%\documentclass[lineno,pdflatex,sn-basic]{sn-jnl}% Basic Springer Nature Reference Style/Chemistry Reference Style
+
+%%=========================================================================================%%
+%% the documentclass is set to pdflatex as default. You can delete it if not appropriate.  %%
+%%=========================================================================================%%
+
+%%\documentclass[sn-basic]{sn-jnl}% Basic Springer Nature Reference Style/Chemistry Reference Style
+
+
+ 
+%%\documentclass[pdflatex,sn-nature]{sn-jnl}% Style for submissions to Nature Portfolio journals
+%%\documentclass[pdflatex,sn-basic]{sn-jnl}% Basic Springer Nature Reference Style/Chemistry Reference Style
+\documentclass[pdflatex,sn-vancouver-num]{sn-jnl}
+%%\documentclass[pdflatex,sn-mathphys-ay]{sn-jnl}% Math and Physical Sciences Author Year Reference Style
+%%\documentclass[pdflatex,sn-aps]{sn-jnl}% American Physical Society (APS) Reference Style
+%%\documentclass[pdflatex,sn-vancouver-num]{sn-jnl}% Vancouver Numbered Reference Style
+%%\documentclass[pdflatex,sn-vancouver-ay]{sn-jnl}% Vancouver Author Year Reference Style
+%%\documentclass[pdflatex,sn-apa]{sn-jnl}% APA Reference Style
+%%\documentclass[pdflatex,sn-chicago]{sn-jnl}% Chicago-based Humanities Reference Style
+
+%%%% Standard Packages
+%%<additional latex packages if required can be included here>
+
+\usepackage{graphicx}%
+\usepackage{multirow}
+\usepackage{amsmath,amssymb,amsfonts}%
+\usepackage{amsthm}%
+\usepackage{mathrsfs}%
+\usepackage[title]{appendix}%
+\usepackage{xcolor}%
+\usepackage[normalem]{ulem}%
+\usepackage{textcomp}%
+\usepackage{manyfoot}%
+\usepackage{booktabs}%
+\usepackage{algorithm}%
+\usepackage{algorithmicx}%
+\usepackage{algpseudocode}%
+\usepackage{listings}%
+\graphicspath{{analysis_plots/}{analysis_plots_eval/}{../1203test/analysis_plots/}{../1203test/analysis_plots_eval/}}%
+
+%%%%
+
+%%%%%=============================================================================%%%%
+%%%%  Remarks: This template is provided to aid authors with the preparation
+%%%%  of original research articles intended for submission to journals published 
+%%%%  by Springer Nature. The guidance has been prepared in partnership with 
+%%%%  production teams to conform to Springer Nature technical requirements. 
+%%%%  Editorial and presentation requirements differ among journal portfolios and 
+%%%%  research disciplines. You may find sections in this template are irrelevant 
+%%%%  to your work and are empowered to omit any such section if allowed by the 
+%%%%  journal you intend to submit to. The submission guidelines and policies 
+%%%%  of the journal take precedence. A detailed User Manual is available in the 
+%%%%  template package for technical guidance.
+%%%%%=============================================================================%%%%
+
+%% as per the requirement new theorem styles can be included as shown below
+\theoremstyle{thmstyleone}%
+\newtheorem{theorem}{Theorem}%  meant for continuous numbers
+%%\newtheorem{theorem}{Theorem}[section]% meant for sectionwise numbers
+%% optional argument [theorem] produces theorem numbering sequence instead of independent numbers for Proposition
+\newtheorem{proposition}[theorem]{Proposition}% 
+%%\newtheorem{proposition}{Proposition}% to get separate numbers for theorem and proposition etc.
+
+\theoremstyle{thmstyletwo}%
+\newtheorem{example}{Example}%
+\newtheorem{remark}{Remark}%
+
+\theoremstyle{thmstylethree}%
+\newtheorem{definition}{Definition}%
+
+\raggedbottom
+%%\unnumbered% uncomment this for unnumbered level heads
+
+\begin{document}
+
+\title[Article Title]{Explainable Counterfactual Reasoning in Depression Medication Selection at Multi-Levels (Personalized and Population)}
+
+%%=============================================================%%
+%% GivenName	-> \fnm{Joergen W.}
+%% Particle	-> \spfx{van der} -> surname prefix
+%% FamilyName	-> \sur{Ploeg}
+%% Suffix	-> \sfx{IV}
+%% \author*[1,2]{\fnm{Joergen W.} \spfx{van der} \sur{Ploeg} 
+%%  \sfx{IV}}\email{iauthor@gmail.com}
+%%=============================================================%%
+
+\author[1]{\fnm{Xinyu} \sur{Qin}}
+\author[3]{\fnm{Mark H.} \sur{Chignell}}
+\author[4]{\fnm{Alexandria} \sur{Greifenberger}}
+\author[5]{\fnm{Sachinthya} \sur{Lokuge}}
+\author[4]{\fnm{Elssa} \sur{Toumeh}}
+\author[4]{\fnm{Tia} \sur{Sternat}}
+\author[4]{\fnm{Martin} \sur{Katzman}}
+\author*[1, 2]{\fnm{Lu} \sur{Wang}}\email{lwang71@central.uh.edu}
+
+\affil[1]{\orgdiv{Department of Biomedical Engineering, Cullen College of Engineering}, \orgname{University of Houston}, \orgaddress{\street{4226 Martin Luther King Boulevard}, \city{Houston}, \postcode{77204}, \state{Texas}, \country{United States}}}
+\affil[2]{\orgdiv{Department of Health Systems \& Population Health Sciences, Tilman J. Fertitta Family College of Medicine}, \orgname{University of Houston}, \orgaddress{\street{4226 Martin Luther King Boulevard}, \city{Houston}, \postcode{77204}, \state{Texas}, \country{United States}}}
+\affil[3]{\orgdiv{Department of Mechanical \& Industrial Engineering}, \orgname{University of Toronto}, \orgaddress{\street{5 King’s College Road}, \city{Toronto}, \postcode{M5S 3G8}, \state{Ontario}, \country{Canada}}}
+\affil[4]{\orgname{START Clinic for Mood and Anxiety Disorders}, \orgaddress{\street{32 Park Road}, \city{Toronto}, \postcode{M4W 2N4}, \state{Ontario}, \country{Canada}}}
+\affil[5]{\orgdiv{Department of Psychology}, \orgname{Virginia Tech}, \orgaddress{\street{890 Drillfield Drive}, \city{Blacksburg}, \postcode{24060}, \state{Virginia}, \country{United States}}}
+
+
+
+
+% \author[1]{\fnm{Xinyu} \sur{Qin}}
+% \author[2]{\fnm{Mark H.} \sur{Chignell}}
+% \author[3]{\fnm{Alexandria} \sur{Greifenberger}}
+% \author[4]{\fnm{Sachinthya} \sur{Lokuge}}
+% \author[3]{\fnm{Elssa} \sur{Toumeh}}
+% \author[3]{\fnm{Tia} \sur{Sternat}}
+% \author[3]{\fnm{Martin} \sur{Katzman}}
+% \author*[1]{\fnm{Lu} \sur{Wang}}\email{lwang71@central.uh.edu}
+
+% \affil[1]{\orgdiv{Department of Biomedical Engineering, Cullen College of Engineering}, \orgname{University of Houston}, \orgaddress{\street{4226 Martin Luther King Boulevard}, \city{Houston}, \postcode{77204}, \state{Texas}, \country{United States}}}
+% \affil[2]{\orgdiv{Department of Mechanical \& Industrial Engineering}, \orgname{University of Toronto}, \orgaddress{\street{5 King’s College Road}, \city{Toronto}, \postcode{M5S 3G8}, \state{Ontario}, \country{Canada}}}
+% \affil[3]{\orgname{START Clinic for Mood and Anxiety Disorders}, \orgaddress{\street{32 Park Road}, \city{Toronto}, \postcode{M4W 2N4}, \state{Ontario}, \country{Canada}}}
+% \affil[4]{\orgdiv{Department of Psychology}, \orgname{Virginia Tech}, \orgaddress{\street{890 Drillfield Drive}, \city{Blacksburg}, \postcode{24060}, \state{Virginia}, \country{United States}}}
+
+
+%%==================================%%
+%% Sample for unstructured abstract %%
+%%==================================%%
+
+\abstract{\textbf{Background:} \textcolor{red}{\sout{This study investigates how variations in Major Depressive Disorder (MDD) symptoms, quantified by the Hamilton Rating Scale for Depression (HAM-D), causally influence the prescription of SSRIs versus SNRIs.}} \textcolor{blue}{This study investigates how variations in Major Depressive Disorder (MDD) symptoms (HAM-D) are associated in a predictive model with randomized clinical trial (RCT) arm assignment between SSRIs and SNRIs, treating counterfactual explanations (CFs) as model-based what-if scenarios rather than causal effects.}  
+\textbf{Methods:} \textcolor{red}{\sout{We applied explainable counterfactual reasoning with counterfactual explanations (CFs) to assess the impact of specific symptom changes on antidepressant choice.}} \textcolor{blue}{We applied explainable counterfactual reasoning with CFs to quantify minimal symptom adjustments that would flip the model-predicted RCT assignment (opposite antidepressant class).}  
+\textbf{Results:} \textcolor{red}{\sout{Among 17 binary classifiers, Random Forest achieved highest performance (accuracy, F1, precision, recall, ROC-AUC near 0.85).}} \textcolor{blue}{Across 17 classifiers, CatBoost and Random Forest achieved the highest performance; typical test metrics ranged ~0.70–0.78 with best ROC-AUC ~0.78.} Sample-based CFs revealed both local and global feature importance of individual symptoms in medication selection.  
+\textbf{Conclusions:} \textcolor{red}{\sout{Counterfactual reasoning elucidates which MDD symptoms most strongly drive SSRI versus SNRI selection, enhancing interpretability of AI-based clinical decision support systems.}} \textcolor{blue}{Counterfactual reasoning highlights which MDD symptoms the model uses to distinguish SSRI vs. SNRI trial assignments, supporting interpretable AI-based decision support while requiring prospective real-world validation beyond the RCT context.} Future work should validate these findings on more diverse cohorts and refine algorithms for clinical deployment.
+}
+
+%%================================%%
+%% Sample for structured abstract %%
+%%================================%%
+
+% \abstract{\textbf{Purpose:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.
+% 
+% \textbf{Methods:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.
+% 
+% \textbf{Results:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.
+% 
+% \textbf{Conclusion:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.}
+
+\keywords{Counterfactual reasoning, AI-based clinical decision support systems, eXplainable AI (XAI), Precision medicine, Population health, Major depressive disorder.}
+
+%%\pacs[JEL Classification]{D8, H51}
+
+%%\pacs[MSC Classification]{35A01, 65L10, 65L12, 65L20, 65L70}
+
+\maketitle
+
+\section{Introduction}
+\label{sec:introduction}
+% \IEEEPARstart{M}{ajor} depressive disorder (MDD) is a severe mental illness that significantly impacts global public health, leading to deterioration in both physical and mental well-being \cite{sinyor2016suicide}. MDD is one of the leading preventable causes of severe consequences in many countries, including suicide and disability \cite{robins1970establishment},\cite{van2014preventing}. To objectively assess the condition of individuals with depression, the Hamilton Rating Scale for Depression (HAM-D) is one of the most extensively employed assessment tools in depression research and typically self-administered by patients in three common versions, i.e., the 17-item version, the 21-item version, and the 24-item version \cite{carrozzino2020hamilton} \textcolor{black}{\cite{boesen2021ema,ferreira2018depression}}. The 17-item version is the most frequently employed, which is also the version utilized in this paper referred as HAM-D including the symptoms of depression listed in TABLE \ref{tab1} \cite{nixon2020bi}. Each symptom or item is scored ranging from 0-4 or 0-2. Accurate assessment provided by HAM-D lays the foundation for selecting appropriate pharmacological treatments for MDD.
+Major depressive disorder (MDD) is a severe mental illness that significantly impacts global public health, leading to deterioration in both physical and mental well-being \cite{sinyor2016suicide}. The Hamilton Rating Scale for Depression (HAM-D) is one of the most extensively employed assessment tools to objectively assess the severity of depression. In research settings, it is clinician-administered, and there are multiple versions, i.e., the 7-item version, 17-item version, 21-item version, and 24-item version \cite{carrozzino2020hamilton, mcintyre2002assessing, hamilton1960rating, hamilton1967development}. The 17-item version is the most frequently employed, which is also the version utilized in this paper. The symptoms of depression are listed in TABLE \ref{tab1} \cite{nixon2020bi}. Each symptom or item is scored ranging from 0-4, 0-3 or 0-2. \textcolor{black}{Historically the HAM-D total scores were used to assess depression severity pre- and post-treatment. It is hypothesized that by identifying patient-specific symptoms, a clinician could tailor treatment by drug class. This could provide input for the ultimate goal of the development of a treatment algorithm in clinical utility for clinicians looking to predict which treatment option should be used based on patient presentation \cite{papakostas2007augmentation}.}
+%The manifestation of depression extends beyond mere feelings of sadness and lack of hope for the future; it encompasses a series of symptoms closely interconnected. \cite{hamilton1967development}
+\begin{table}[ht]
+\centering
+\caption{17 items/symptoms of MDD}
+\label{tab1}
+\setlength{\tabcolsep}{2pt} 
+\renewcommand{\arraystretch}{1.2} 
+\begin{tabular}{|p{50pt}|p{190pt}|} 
+\hline
+\scriptsize \textbf{HAM-D Item}  & \textbf{Symptom/Item Description} \\
+\hline
+\scriptsize HAM-D01 & Depressed mood \\
+\hline
+\scriptsize HAM-D02 & Feelings of guilt \\
+\hline
+\scriptsize HAM-D03 & Suicidal thoughts or actions \\
+\hline
+\scriptsize HAM-D04 & Insomnia-early (sleep onset delay) \\
+\hline
+\scriptsize HAM-D05 & Insomnia-middle (mid-sleep wakening) \\
+\hline
+\scriptsize HAM-D06 & Insomnia-late (early morning wakening) \\
+\hline
+\scriptsize HAM-D07 & Work and activities (assessing pleasure and functioning) \\
+\hline
+\scriptsize HAM-D08 & Psychomotor retardation (slow movement/speech) \\
+\hline
+\scriptsize HAM-D09 & Psychomotor agitation (restless, fidgeting, etc.) \\
+\hline
+\scriptsize HAM-D10 & Psychic anxiety (worry, apprehension, etc.) \\
+\hline
+\scriptsize HAM-D11 & Somatic anxiety (heart racing, sweating, etc.) \\
+\hline
+\scriptsize HAM-D12 & Loss of appetite \\
+\hline
+\scriptsize HAM-D13 & Tiredness/pain \\
+\hline
+\scriptsize HAM-D14 & Loss of sexual interest \\
+\hline
+\scriptsize HAM-D15 & Hypochondriasis \\
+\hline
+\scriptsize HAM-D16 & Weight loss \\
+\hline
+\scriptsize HAM-D17 & Lack of insight \\
+\hline
+\end{tabular}
+\end{table}
+
+%Patients with depression need timely and appropriate treatment. , and individual patient responses %As a standardized assessment tool, the HAM-D systematically quantifies the severity of a patient's symptoms, providing robust support for clinical decision-making. By leveraging the HAM-D scale to build predictive models, we can potentially enhance the precision and efficiency of antidepressant medication selection.
+%加在这里
+%In clinical practice, clinicians consider multiple aspects when making medication decisions including the severity and type of symptoms, patient history, and potential side effects \cite{gelenberg2010american}. The challenge lies in quantifying these factors to make the decision-making process faster and more accurate. To address it, AI-based clinical decision making support system is important to integrate with the interpretability of machine learning (ML) models in order to provide quantified explanations of prediction.
+\begin{figure*}[!t]
+\centerline{\includegraphics[width=\textwidth]{Counterfactual.png}}
+\caption{Illustration of explainable counterfactual reasoning on MDD medication selection.}
+\label{C1}
+
+\end{figure*}
+
+\textcolor{black}{Distinguishing between different categories of antidepressants based on individual HAM-D item scores can be clinically relevant and beneficial for several reasons. Two commonly used categories of antidepressants as the first-line treatments for MDD are Selective Serotonin Reuptake Inhibitors (SSRIs) and Serotonin-Norepinephrine Reuptake Inhibitors (SNRIs) \cite{kennedy2016canadian}}. SSRIs primarily increase serotonin levels in the synapse, which may be more effective in alleviating mood and anxiety-related symptoms, while SNRIs increase both serotonin and norepinephrine levels in the synapse, potentially offering additional benefits for patients with significant anxiety or physical symptoms like pain \cite{thase2001remission, shelton2019serotonin}. Despite SSRIs and SNRIs being first-line treatments, up to 50\% of patients do not respond adequately to these medications \cite{garcia2012treatment}. This inadequate response may result from difficulties in accurately predicting which treatment will work best for a patient’s specific symptoms. Such challenges often lead to residual symptoms, worsened functioning, more chronic episodes, and increased healthcare costs \cite{garcia2012treatment}. It is hypothesized that artificial intelligence (AI) can aid in identifying preferential response patterns based on individual symptom profiles, helping clinicians make more targeted antidepressant prescribing decisions for MDD patients.
+
+%Although first-line pharmacological treatments for MDD, including SSRIs and SNRIs, were developed and widely prescribed to reduce symptoms of depression, approximately 50\% of patients receive an inadequate response to first-line antidepressant treatment \cite{garcia2012treatment, sheffler2019antidepressants}. The lack of response could be due to the inability of clinicians to accurately and specifically preferentially predict a patient’s response to an SSRI or SNRI with the hope of choosing the best option based on the patient’s specific symptom profile. Unfortunately, these challenges may lead to the accumulation of residual symptoms of MDD, potentially leading to worse functioning, more chronic episodes, and greater healthcare costs \cite{garcia2012treatment, otte2016major}. Thus, the use of AI can assist clinicians in the selection of the most optimal antidepressant treatment for specific patient symptom profiles and may allow for more personalized and beneficial treatment for individual patients suffering with MDD. %However, current AI-based clinical decision supporting systems merely leverage the capabilities of the Electronic Health Records (EHRs) system to enhance the healthcare delivery without considering the complexed relationship between multiple symptoms and medication selection in quantification.% into the AI-based decision making process.%Moreover, to fully leverage the potential of AI in this context, it is important to acknowledge the multiple aspects that clinicians consider in clinical practice.%This may result in higher rates of, and faster achievement of remission, as well as a reduction of incidents of treatment resistance.
+
+%In clinical practice, clinicians consider multiple aspects of the patient’s specific symptom profiles when making medication decisions In clinical practice, clinicians consider multiple aspects when making medication decisions, including the severity and type of symptoms, patient history, and potential side effects \cite{gelenberg2010american}. in quantification.
+Current AI-based clinical decision support systems (CDSSs) merely leverage the capabilities of the Electronic Health Records (EHRs) system to enhance the healthcare delivery without considering the complexed relationship between multiple symptoms and medication selection in the clinical decision making process. More specifically, AI CDSSs highly rely on the population data to train the model, which may lead to biases if the dataset does not represent all patient groups adequately and definitely ignores patient variabilities at personalized level \textcolor{black}{\cite{gianfrancesco2018potential}}. To better address this issue, \textcolor{black}{we aimed to}
+ quantify the relationship between multiple symptoms and medication selection at both personalized and population levels. 
+
+However, AI-based quantification (e.g., feature importance scores that indicate the contribution of each variable to the model’s prediction) can be difficult for clinicians to interpret. Therefore, integrating interpretability into AI CDSSs is crucial to provide clear explanations for predictions. Most machine learning (ML) models, particularly deep learning, are often seen as 'black boxes' due to their opaque decision-making processes, leading to a lack of trust and acceptance. eXplainable Artificial Intelligence (XAI) was introduced to address this issue by making model decisions more transparent \cite{arrieta2020explainable}. 
+
+% However, AI-based quantification (e.g., 1 as the Area Under the Receiver Operating Characteristic Curve that indicates a perfect model) can be difficult for clinicians to interpret. Therefore, integrating interpretability into AI CDSSs is crucial to provide clear explanations for predictions. Most machine learning models, particularly deep learning, are often seen as 'black boxes' due to their opaque decision-making processes, leading to a lack of trust and acceptance. eXplainable Artificial Intelligence (XAI) was introduced to address this issue by making model decisions more transparent, helping users understand how features are used to generate specific outcomes and fostering trust in AI/ML methods \cite{arrieta2020explainable}.
+% However, AI-based quantification (e.g., 1 as the Area Under the Receiver Operating Characteristic Curve that indicates a perfect model) is not easily to be understood by human experts such as clinicians. And hence, AI CDSSs are important to integrate with the interpretability of machine learning (ML) models in order to provide quantified explanations of prediction. The ability to explain how a model arrives at its decisions is vital for ensuring that patients receive appropriate treatment in MDD medication selection. However, most machine learning models, especially deep learning ones, are often treated as “black boxes", where the internal decision-making process is opaque and not easily comprehensible to humans, which leads to a lack of trust and acceptance, To solve this problem, eXplainable Artificial Intelligence (XAI) was proposed to help people understand and interpret the decision-making process of machine learning models in order to improve human trust on AI/ML methods \cite{arrieta2020explainable}. More specifically, by providing explanations for model decisions, XAI helps users gain knowledge into how the model extracts and utilizes features from the input data to arrive at specific outcomes. %In this paper, we employ feature importance in XAI to quantify the contribution of each input feature to the ML model prediction.
+
+%A model's transparency directly impacts its acceptance by users, as it provides insights into the decision-making process and highlights the causal relationships between symptoms and medication selections \cite{arrieta2020explainable}. Moreover, clinicians are not only interested in understanding the interpretability of models but also in how to utilize the established models to provide tailored medical recommendations for individual patients \cite{shortliffe2018clinical}.
+%XAI is an AI technology aimed at helping people understand and interpret the decision-making process of machine learning models in order to improve human trust on AI methods. For instance, consider a random forest model, the decision-making involves aggregating results from numerous decision trees, making it difficult to trace how individual variables contribute to the final prediction. This lack of transparency can lead to a lack of trust and acceptance, especially in high-risk domains such as healthcare. By providing explanations for model decisions, XAI helps users gain knowledge into how the model extracts and utilizes features from the input data to arrive at specific outcomes. 
+
+%The integration of eXplainable Artificial Intelligence (XAI) principles with counterfactual reasoning leads to the concept of explainable counterfactual reasoning \cite{arrieta2020explainable}.
+%\cite{lewis2013counterfactuals}
+
+% In addition to understanding ML prediction in MDD medication selection, it is significant to personalize treatment plans and improve clinical outcome based on medication reasoning by understanding the causal relationship between HAM-D scales and the anti-depression medicine categories by clinicians. \textcolor{black}{In the context of medical AI, causal relationship helps to explain why an AI model suggests certain treatments for a patient by linking the input symptoms directly to the output recommendations \cite{holzinger2019causability}.} \textcolor{black}{Counterfactual reasoning is a mode of reasoning that involves considering alternative scenarios and contemplating what would have happened if certain conditions or circumstances had been different. \cite{roese2014might, pearl2000models,byrne2007rational}} \textcolor{black}{Counterfactual reasoning is particularly effective in clinical contents, it can be used to simulate different treatment paths and assess their potential outcomes, thus offering more reliable guidance for clinical decisions \cite{hernan2010causal}. Furthermore, counterfactual reasoning is crucial when randomized controlled clinical trials are not feasible or ethical, as it allows for causal inference from observational data by comparing the actual and potential outcomes under different interventions \cite{pearl2000models}. In the context of depression treatment, counterfactual reasoning enables the investigation of questions e.g., "Would a patient’s depressive symptoms have improved if they were prescribed a different antidepressant?" This approach provides a better understanding of the causal effects of medication selection, rather than merely observing correlations.}
+
+ML prediction models may be used to aid in personalized medication treatment, which can help optimize treatment outcomes. In the context of medical AI, “causality” further  aids interpretability by explaining why an AI model suggests certain treatments for a patient through direct links between input symptoms and output recommendations, making  the system’s reasoning clear and understandable \textcolor{black}{ \cite{holzinger2019causability}.} Counterfactual reasoning, a mode of thinking that considers alternative scenarios and what might have happened under different conditions \textcolor{black}{\cite{roese2014might}}, is particularly effective in clinical contexts to learn the causality. \textcolor{black}{In depression treatment, counterfactual reasoning enables questions e.g., 'Would a patient’s depressive symptoms have improved with a different antidepressant?' This provides deeper insights into the causal effects of medication selection beyond mere correlations \cite{hernan2010causal}.}
+
+
+
+%By contemplating counterfactual scenarios where specific symptom scores on the HAM-D scale are altered, we can investigate the causal impact of those symptoms on the predicted selection of medication.
+%, so that we can apply precise treatments to patients based on their HAM-D scores.  Causality refers to the direct cause-and-effect relationship between variables, where a change in one variable leads to a change in another variable \cite{cox2004causality}. Causality and counterfactual reasoning are linked concepts. This reasoning paradigm is inherently tied to the concept of causality because it allows us to explore the consequences of changes in causal variables. 
+
+%To address these needs, our paper aims to implement explainable counterfactual reasoning using counterfactual explanations to learn the causal relationship between the HAM-D scale and the anti-depression medicine categories made by clinicians \cite{wachter2017counterfactual}. 
+
+
+
+
+%Counterfactual explanation, a method in XAI, generates counterfactual explanations to identify the changes to the input that would lead to a different output from the machine learning model.
+
+Counterfactual explanations (CFs) is a method \textcolor{black}{that}
+adopted the concept of counterfactual reasoning in XAI that explains machine learning model predictions by describing how an outcome would change if the input data were different by generating multiple CFs, which provides an awareness of the model's behavior and decision-making process \cite{kim2016examples}. \textcolor{black}{By generating counterfactual examples that represent hypothetical interventions on the input features (HAM-D symptoms), we can assess the causal impact of altering those symptoms on the model's predicted medication selection \cite{wachter2017counterfactual}.} 
+
+Recent advancements have led to various CFs methods, including Feasible and Actionable Counterfactual Explanations \cite{poyiadzi2020face}, Growing Spheres \cite{laugel2017inverse}, and Multi-objective CFs \cite{dandl2020multi}. While these techniques contribute significantly to the field, they often generate either a single counterfactual example or produce relatively homogeneous explanations, limiting the diversity of decision-making options crucial for practical applications. To address these limitations, our study employs the Diverse Counterfactual Explanations (DICE) method \cite{mothilal2020explaining}. DICE enhances the generation of multiple, diverse CFs for a single instance and allows for the imposition of constraints to prevent specific variables from changing. This approach provides more tailored and practical decision-making support, aligning with regulatory requirements for explainable AI and fostering trust between healthcare professionals and the system \cite{ribera2019can}. Fig. \ref{C1} presents a more concrete illustration to show MDD medication selection based on explainable counterfactual reasoning.
+
+
+%The ability of counterfactual explanations to provide insights into causal relationships is based on the principles of counterfactual reasoning \cite{pearl2009causality}. By generating counterfactual explanations that represent hypothetical interventions on the input features (HAM-D symptoms), we can assess the causal impact of altering those symptoms on the model's predicted medication selection \cite{wachter2017counterfactual}.} \textcolor{black}{Counterfactual explanations allow clinicians to explore model behavior across different scenarios, facilitating the detection of potential biases \cite{rajkomar2018ensuring}. This approach aligns with regulatory requirements for explainable AI and builds trust between healthcare professionals and the system \cite{ribera2019can}. By presenting "what-if" scenarios, counterfactual explanations support more informed clinical decision-making, especially in complex cases \cite{holzinger2019causability}. These benefits collectively make AI-based CDSSs more interpretable and transparent. 
+% \begin{figure*}[!t]
+% \centerline{\includegraphics[width=0.9\textwidth]{Counterfactual.png}}
+% \caption{Illustration of explainable counterfactual reasoning on MDD medication selection.}
+% \label{C1}
+% \end{figure*}
+
+ %By inputting various HAM-D scores into the machine learning classification model, we can determine the appropriate medication for the patient. Subsequently, If the we want to know what medication classification he would receive in a counterfactual scenario, we can employ counterfactual explanation. Through counterfactual explanations, we can explore potential alterations to his HAM-D scores and understand how such changes could lead to a different outcome.
+
+In real-world scenarios, particularly in the medical field, there are numerous constraints generating CFs. For instances, chronic stressors such as work pressure may be observed in patients with MDD and may not feasibly change in a short period of time (see the first panel in Fig. \ref{S1}). The Fig. \ref{S1}  also shows a scenario that does not take real-world factors into account and a scenario that considers real-world factors (see the first column in Fig. \ref{S1}), factoring in the likelihood that a patient typically will not experience immediate symptomatic relief (see the second column in Fig. \ref{S1}).% This consideration allows us to select the most appropriate scenario to accommodate patient's real situations with modeling.
+
+
+
+
+%These constraints necessitate the generation of diverse counterfactual explanation while prohibiting changes in certain symptoms to enhance the feasibility of counterfactual explanations \cite{russell2019efficient}.
+
+\begin{figure}[!t]
+\centerline{\includegraphics[width=0.7\columnwidth]{selection.png}}
+\caption{Illustration of constrained explanation and unconstrained counterfactual explanations.}
+\label{S1}
+
+\end{figure}
+
+% %\begin{figure*}[!t]
+% \centerline{\includegraphics[width=\textwidth]{importance.png}}
+% \caption{The comparison of local and global feature importance schemes of counterfactual explanations on personalized and populational levels, respectively.}
+% \label{l1}
+% \end{figure*}
+\begin{figure*}[!t]
+\centerline{\includegraphics[width=\textwidth]{importance.png}}
+\caption{The comparison of local and global feature importance schemes of CFs on personalized and population levels, respectively.}
+\label{l1}
+\end{figure*}
+
+
+In XAI, model interpretability has been addressed through various feature importance methods, including local and global approaches. Local feature importance quantifies how individual features influence a specific prediction, with methods like LIME approximating non-linear models using linear ones \cite{ribeiro2016should} and SHapley Additive
+exPlanations method providing a unified framework for such calculations \cite{lundberg2017unified}. Global feature importance, on the other hand, measures how features contribute to predictions across the entire dataset by using surrogate models \cite{craven1995extracting, ribeiro2016should}. However, these methods simulate a surrogate model and may not fully reflect the original model's behavior. \textcolor{black}{In addition, they are not ideally suited for the 'what-if' scenarios central to our study. More specifically, they focus on explaining feature importance without providing insight into how altering features would change the model's outcome. In our clinical context, understanding how depressive symptoms change, as evaluated by the HAM-D, based on specific drug selection is crucial, and CFs directly address this by generating alternative scenarios.} 
+In CFs, local feature importance of one instance is determined by the frequency of feature changes when generating multiple CFs for a given instance \cite{kommiya2021towards}. The higher the frequency of changing a feature when generating CFs, the more important it is for the model's decision-making process. The global feature importance is computed by summing up local feature importance from all explanations. The comparison of local and global feature importance schemes is illustrated in Fig. \ref{l1}. \textcolor{black}{In summary, CFs not only calculate feature importance, but also visualize these influences, providing clinicians with an intuitive understanding of the reasoning behind medication recommendations \cite{ali2023enlightening}.}
+% Furthermore, the CF method can enhance interpretability by providing feature importance, which identifies the significant variables influencing decision-making via ranking the features contributed to the model prediction and is one of the most important components of XAI. Local feature importance of one instance is determined by the frequency of feature changes when generating multiple CFs for a given instance \cite{kommiya2021towards}. The higher the frequency of changing a feature when generating CFs, the more important it is for the model's decision-making process. The global feature importance is computed by summing up local feature importance from all explanations. The comparison of local and global feature importance schemes is illustrated in Fig. \ref{l1}. \textcolor{black}{Our visualization of feature importance demonstrates how different symptoms influence the AI model's decisions, helping clinicians understand the reasoning behind specific medication recommendations \cite{ali2023enlightening}.}
+
+By doing so, our work makes the following contributions: 
+\begin{itemize}
+    \item We provide quantifiable AI CDSSs to predict medication selections for patients with MDD at both the personalized and population levels.
+    \item We establish a method that may in the future support clinicians to offer treatment recommendations based on personalized health conditions for each individual patient.
+    \item We develop an explainable AI method on MDD medication selection to improve the trust and intake of AI by human experts, i.e., clinicians in our case.
+\end{itemize}
+% By doing so, our work makes the following contributions: 
+% \begin{itemize}
+%     \item We provide quantifiable AI-based clinical decision making support to predict medication selections for patients with MDD at both the personalized and populational levels.
+%     \item We enable clinicians to offer treatment recommendations based on personalized health conditions for each individual patient.
+%     \item We develop an explainable AI method on MDD medication selection to improve the trust and intake of AI by human experts, i.e., clinicians in our case.
+% \end{itemize}
+% \vspace{-0.5cm}
+% \section{Related Works}
+%({\color{black}{Can you prodide a subsection in RW for MDD medication especially on the significance of choosing SSRIs/SNRIs? And why we need AI to assist the selection from medical perspective?}})
+
+%\subsection{Challenges in Selecting MDD Medications}
+%The citation for 'Antidepressants' from Google Scholar does not include the journal field.
+
+%Although first-line pharmacological treatments for MDD, including SSRIs and SNRIs, were developed and widely prescribed to reduce symptoms of depression, approximately 50\% of patients receive an inadequate response to first-line antidepressant treatment \cite{garcia2012treatment, sheffler2019antidepressants}. The lack of response could be due to the inability of clinicians to accurately and specifically preferentially predict a patient’s response to an SSRI or SNRI with the hope of choosing the best option based on the patient’s specific symptom profile. Unfortunately, these challenges may lead to the accumulation of residual symptoms of MDD, potentially leading to worse functioning, more chronic episodes, and greater healthcare costs \cite{garcia2012treatment, otte2016major}. Thus, the use of AI can assist clinicians in the selection of the most optimal antidepressant treatment for specific patient symptom profiles and may allow for more personalized and beneficial treatment for individual patients suffering with MDD. This may result in higher rates of, and faster achievement of remission, as well as a reduction of incidents of treatment resistance. 
+
+% \subsection{CF}
+% Recent advancements in machine learning have led to the development of various methods for generating CFs. The  Feasible and Actionable CFs method identifies CFs that closely resemble the distribution of the original data \cite{poyiadzi2020face}. The Growing Spheres method generates CFs by producing random instances around the target data point \cite{laugel2017inverse}, while the  Multi-objective CFs approach employs a multi-objective optimization algorithm to calculate CFs \cite{dandl2020multi}. Although these techniques contribute to the field by providing CFs for individual instance, they often fall short by generating either a single counterfactual example or producing explanations that are relatively homogeneous. This limitation restricts the diversity of decision-making options, which is crucial for addressing the varied requirements encountered in practical applications.
+
+% To address these gaps, our paper leverages the Diverse CFs (DICE) \cite{mothilal2020explaining}, which enhances the generation of multiple, diverse CFs for a single instance. Additionally, DICE allows the imposition of constraints to prevent specific variables from changing, thereby providing more tailored and practical decision-making support. %By integrating DICE, our research builds on previous work and addresses the need for diverse and customizable CFs, demonstrating both the relevance and necessity of our approach in advancing the field. 
+
+
+
+% \subsection{Feature Importance in XAI}
+
+% In the context of model interpretability in XAI, various feature improtance methodologies have been proposed including local and global feature importance. Local feature importance quantifies the contribution of each individual feature to a single prediction made by a model. One of the most common approaches to computing local feature importance is Local Interpretable Model-Agnostic Explanations (LIME) \cite{ribeiro2016should}, which fits a liner model to approximate non-linear models. One extension of LIME is Local Rule-based Explanations, which fits a decision-tree classifier \cite{guidotti2018local}. The SHapley Additive exPlanations method \cite{lundberg2017unified} introduces a unified framework for computing local feature importance.
+
+% Global feature importance measures the overall contribution of each feature to a model's predictions across the entire dataset, which can be derived through the approximation of the decision boundary using a less complex surrogate model \cite{craven1995extracting, ribeiro2016should}.
+
+% However, the aforementioned feature importance methods in XAI essentially simulate a surrogate model based on the original model to compute feature importance and may not fully adhere to the original model's behavior. \textcolor{black}{And while those methodologies are excellent method for explaining model predictions in many contexts, they are not ideally suited for the "what-if" scenarios central to our study. Those methods focuses on explaining the importance of features for a given prediction, but it does not inherently provide insights into how changing these features would alter the model's output. In our clinical context, understanding the potential effects of HAM-D scores changes on drug selection is crucial. CFs, on the other hand, directly address this need by generating concrete alternative scenarios.}
+% Consequently, the advantage lies in CF methods that we use depending on the original model itself to compute feature importance. %In the medical field, where trustworthiness is paramount, this adherence to the original model's principles is particularly crucial.
+
+
+
+
+
+\section{Method}
+
+%\subsection{Algorithms}
+
+% \begin{table*}[!htbp]
+%     \caption{Classification Methods and Corresponding Data Distribution. This table presents the categorization of Selective Serotonin Reuptake Inhibitors (SSRIs) and Serotonin and Norepinephrine Reuptake Inhibitors (SNRIs) based on three different classification methods: medication name, V1 and V2 Dose. The data distribution for each category is provided.}
+%     \centering
+%     \resizebox{\textwidth}{!}{%
+%     \begin{tabular}{|c|l|l|c|}
+%     \hline
+%     \textbf{Categorization} & \textbf{SSRIs} & \textbf{SNRIs} & \textbf{Data Distribution} \\
+%     \hline
+%     Drug Name & Escitalopram, Paroxetine, Fluoxetine & Duloxetine, Venlafaxine & SNRIs: 1070, SSRIs: 398 \\
+%     \hline
+%     V1 Dose & 
+%     \begin{tabular}[c]{@{}l@{}}a. Venlafaxine at $\geq$ 150 mg\\ b. Paroxetine at $\geq$ 50 mg\\ c. Duloxetine at $\geq$ 60 mg\\ \end{tabular} & 
+%     \begin{tabular}[c]{@{}l@{}}a. Venlafaxine, Paroxetine,\\ \quad and Duloxetine at lower doses\\ e. Fluoxetine and Escitalopram\end{tabular} & SNRIs: 930, SSRIs: 538 \\
+%     \hline
+%     V2 Dose & 
+%     \begin{tabular}[c]{@{}l@{}}a. Everything else\end{tabular} & 
+%     \begin{tabular}[c]{@{}l@{}}a. Venlafaxine $>$ 150 mg\\ b. Paroxetine $>$ 50 mg\\ c. Duloxetine $>$ 60 mg\end{tabular} & SNRIs: 347, SSRIs: 1121 \\
+%     \hline
+%     \end{tabular}}
+%     \label{tab:classification}
+% \end{table*}
+
+% \begin{table*}[!htbp]
+%     \caption{Antidepressant medication categorization criteria and Corresponding data distribution.}
+%     \centering
+%     \resizebox{\textwidth}{!}{%
+%     \begin{tabular}{|c|l|l|c|}
+%     \hline
+%     \textbf{Drugs categorized by} & \textbf{SNRI} & \textbf{SSRI} & \textbf{Data Distribution} \\
+%     \hline
+%     Categorized By Drug Name & Duloxetine, Venlafaxine & All Escitalopram, Paroxetine, Fluoxetine & SNRIs: 1070, SSRIs: 398 \\
+%     \hline
+%     Categorized by Dosing Version 1 & 
+%     \begin{tabular}[c]{@{}l@{}}a. Venlafaxine, Paroxetine,\\ \quad and Duloxetine at lower doses\\
+%     b. Fluoxetine and Escitalopram\end{tabular} &
+%     \begin{tabular}[c]{@{}l@{}}a. Venlafaxine at $\geq$ 150 mg\\ b. Paroxetine at $\geq$ 50 mg\\ c. Duloxetine at $\geq$ 60 mg\\ \end{tabular} & SNRIs: 930, SSRIs: 538 \\
+%     \hline
+%     Categorized by Dosing Version 2 & 
+%     \begin{tabular}[c]{@{}l@{}}a. Venlafaxine $>$ 150 mg\\ b. Paroxetine $>$ 50 mg\\ c. Duloxetine $>$ 60 mg\end{tabular} &
+%     \begin{tabular}[c]{@{}l@{}}a. Everything else\end{tabular} & SNRIs: 347, SSRIs: 1121 \\
+%     \hline
+%     \end{tabular}}
+%     \label{tab:classification}
+% \end{table*}
+% \begin{table*}[!htbp]
+%     \caption{Antidepressant Drug Name Categorization}
+%     \centering
+%     \resizebox{\textwidth}{!}{%
+%     \begin{tabular}{|c|l|l|c|}
+%     \hline
+%     \textbf{Drugs categorized by} & \textbf{SNRI} & \textbf{SSRI} & \textbf{Data Distribution} \\
+%     \hline
+%     Categorized By Drug Name & Duloxetine, Venlafaxine & All Escitalopram, Paroxetine, Fluoxetine & SNRIs: 1070, SSRIs: 398 \\
+%     \hline
+%     Categorized by Dosing Version 1 & 
+%     \begin{tabular}[c]{@{}l@{}}Venlafaxine $\geq$ 150 mg\\ Paroxetine $\geq$ 50 mg\\ Duloxetine $\geq$ 60 mg\end{tabular} &
+%     \begin{tabular}[c]{@{}l@{}}All Escitalopram,\\ All Fluoxetine\\ Venlafaxine $<$ 150 mg\\ Paroxetine $<$ 50 mg\\ Duloxetine $<$ 60 mg\end{tabular} & SNRIs: 930, SSRIs: 538 \\
+%     \hline
+%     Categorized by Dosing Version 2 & 
+%     \begin{tabular}[c]{@{}l@{}}Venlafaxine $>$ 150 mg\\ Paroxetine $>$ 50 mg\\ Duloxetine $>$ 60 mg\end{tabular} &
+%     \begin{tabular}[c]{@{}l@{}}All Escitalopram,\\ All Fluoxetine\\ Venlafaxine $\leq$ 150 mg\\ Paroxetine $\leq$ 50 mg\\ Duloxetine $\leq$ 60 mg\end{tabular} & SNRIs: 347, SSRIs: 1121 \\
+%     \hline
+%     \end{tabular}}
+%     \label{tab:classification}
+% \end{table*}
+
+% \begin{table}[!htbp]
+%     \caption{Antidepressant Drug Name Categorization}
+%     \centering
+%     \resizebox{\columnwidth}{!}{%
+%     \begin{tabular}{|c|l|l|c|}
+%     \hline
+%     \textbf{Drugs categorized by} & \textbf{SNRI} & \textbf{SSRI} & \textbf{Data Distribution} \\
+%     \hline
+%     Drug Name & 
+%     \begin{tabular}[c]{@{}l@{}}All Duloxetine,\\ All Venlafaxine\end{tabular} &
+%     \begin{tabular}[c]{@{}l@{}}All Escitalopram,\\ All Paroxetine,\\ All Fluoxetine\end{tabular} & SNRIs: 1070 SSRIs: 398 \\
+%     \hline
+%     Dosing Version 1 & 
+%     \begin{tabular}[c]{@{}l@{}}Venlafaxine $\geq$ 150 mg\\ Paroxetine $\geq$ 50 mg\\ Duloxetine $\geq$ 60 mg\end{tabular} &
+%     \begin{tabular}[c]{@{}l@{}}All Escitalopram,\\ All Fluoxetine\\ Venlafaxine $<$ 150 mg\\ Paroxetine $<$ 50 mg\\ Duloxetine $<$ 60 mg\end{tabular} & SNRIs: 930, SSRIs: 538 \\
+%     \hline
+%     Dosing Version 2 & 
+%     \begin{tabular}[c]{@{}l@{}}Venlafaxine $>$ 150 mg\\ Paroxetine $>$ 50 mg\\ Duloxetine $>$ 60 mg\end{tabular} &
+%     \begin{tabular}[c]{@{}l@{}}All Escitalopram,\\ All Fluoxetine\\ Venlafaxine $\leq$ 150 mg\\ Paroxetine $\leq$ 50 mg\\ Duloxetine $\leq$ 60 mg\end{tabular} & SNRIs: 347, SSRIs: 1121 \\
+%     \hline
+%     \end{tabular}}
+%     \label{tab:classification}
+% \end{table}
+
+
+%The method \cite{wachter2017counterfactual} first introduced the notion of CF. 
+\textcolor{black}{In the context of our study, the input features $X$ represent an individual patient's various HAM-D item scores, which characterize the severity of different depressive symptoms. The counterfactual example $X'$ refers to a slightly altered version of the patient's original HAM-D item scores. The difference between $X$ and $X'$ captures the changes in symptom severity that would lead to a different predicted antidepressant medication class being selected for the patient.} \textcolor{blue}{The target class $y_{target}$ is defined as the opposite antidepressant class relative to the model's current prediction (switching SSRI $\leftrightarrow$ SNRI).} Specifically, the Eq. (\ref{eq1}) aims to find the counterfactual example $X'$ that minimizes the loss between the target medication class $y_{target}$ and the model's prediction $f(X')$, while also keeping $X'$ close to the original input $X$. \textcolor{black}{This allows us to identify the minimal changes in individual HAM-D item symptom scores that would result in the model recommending a different antidepressant medication class (e.g., switching from an SSRI to an SNRI) for the individual patient.} The formula for generating CFs is expressed as follows from Unconditional Counterfactuals \cite{wachter2017counterfactual}:
+
+\begin{equation}
+\label{eq1}
+   \min \mathcal{L}(f(X'), y_{target}) + \lambda \cdot dist(X', X). \quad 
+\end{equation}
+
+The function $f(\cdot)$ represents a trained target model, which can range from linear models to various machine learning models, such as random forests. \textcolor{black}{This model takes a patient's individual HAM-D item scores as input and predicts the most suitable antidepressant medication.}
+The $\mathcal{L}(\cdot)$ is a loss function, typically implemented using the $L_{1}$ loss. The $dist(\cdot)$ denotes the distance function. As HAM-D scores include both continuous and categorical variables, we need distinct definitions for different types of variables:
+
+\begin{equation}
+\label{eq2}
+   dist\_cont(X', X)= \frac{1}{d_{cont}}\sum_{p=1}^{d_{cont}} \frac{\left\vert X'^{p} - X^{p} \right\vert}{MAD_{p}},
+\end{equation}
+
+\begin{equation}
+\label{eq3}
+   dist\_cat(X', X)= \frac{1}{d_{cat}} \sum_{p=1}^{d_{cat}} \mathbb{I}(X'^{p} \neq X^{p}).
+\end{equation}
+
+Given that features in the HAM-D scores may span diverse ranges, computing the median absolute deviation (MAD) for each continuous variable offers a robust measure. The distance function of continuous variables is obtained by Eq. (\ref{eq2}) from \cite{wachter2017counterfactual}. Here, \textcolor{black}{$d_{cont}$ represents the total count of continuous variables in the HAM-D scale, and $MAD_{p}$ denotes the median absolute deviation for the $p^{th}$ HAM-D item.}
+For categorical features in the HAM-D scale, a simple distance function is employed as Eq. (\ref{eq3}) from \cite{wachter2017counterfactual}: 1 is assigned if the value of the $X'$ differs from the $X$, otherwise, it is assigned a value of zero. Here, $d_{cat}$ represents the summary of categorical variables in HAM-D, and $\mathbb{I}$ serves as a binary indicator (0/1).
+\textcolor{blue}{In implementation, HAM-D items are kept as numeric/ordinal inputs (no one-hot in the distance metric), so multi-step jumps (e.g., 0$\rightarrow$4) are penalized more than single-step changes, improving plausibility of CF deltas. Reporting CF deltas includes each item's valid score range.}
+To generate multiple CFs ($X_{1}', \ldots, X_{k}')$ for computing feature importance to assist clinicians' decision-making, we adapt the DICE method. This approach builds upon the work of \cite{wachter2017counterfactual} by introducing a module that enhances the diversity of CFs. Its formula can be expressed as from \cite{mothilal2020explaining}:
+
+\begin{align}
+\label{eq4}
+    \min \frac{1}{k} \sum_{i=1}^{k} \mathcal{L}(f(X_{i}'), y_{target}) &+ \frac{\lambda_{1}}{k} \sum_{i=1}^{k} dist(X_{i}', X) \\ \nonumber
+    &- \lambda_{2}dpp\_diversity(X_{1}', \ldots, X_{k}'),
+\end{align}
+where $k$ represents the total number of generated CFs, while $\lambda_{1}$ and $\lambda_{2}$ are hyperparameters that can be set manually around 0 - 1. Each $X_{i}'$ is randomly generated within the value range of the utilized HAM-D dataset. $dist(\cdot)$ maintains the same definition as \cite{wachter2017counterfactual}, while $\mathcal{L}(\cdot)$ from \cite{mothilal2020explaining} is expressed as:
+
+\begin{equation}
+\label{eq5}
+loss = \max\left(0, 1 - z \cdot\left(f\left(X'\right)\right)\right).
+\end{equation}
+
+\textcolor{black}{Note that, when $y_{target}$ = 0 (SSRIs), $z$ is -1 and when $y_{target}$ = 1 (SNRIs), $z$ is 1.} Our objective of generating CFs is to make the model's output $f(X')$ exceed or fall below a fixed threshold (usually 0.5), without necessarily requiring it to closely match the expected output $y_{target}$ (0 or 1).
+We want to generate a set of $k$ CFs, and they will all lead to a different antidepressant medication class decision than the original input $X$.
+\textcolor{red}{\sout{Earlier we described diversity as larger $\det(K)$ for more similar CFs; this was incorrect.}}
+\textcolor{blue}{The diversity metric $dpp\_diversity(\cdot)$ uses a determinantal point process (DPP) \cite{kulesza2012determinantal} with $K_{i,j} = \frac{1}{1 + dist\left(X_{i}', X_{j}'\right)}$ and $dpp\_diversity = \det(K)$. Farther-apart CFs increase $\det(K)$, encouraging diverse counterfactual sets so clinicians see multiple feasible ways to flip SSRI/SNRI predictions.}
+
+
+
+% \begin{table*}[!htbp]
+%     \caption{The evaluation metrics of 17 machine learning methods evaluated under the V2 dose classification criterion. One-hot encoding, oversampling, and 5-fold cross-validation were applied on all 17 models to improve the corresponding model performances. The evaluation metrics for both training and testing sets are presented.}
+%     \centering
+%     %The data underwent one-hot encoding before performing 5-fold cross-validation and oversampling. 
+%     \resizebox{\textwidth}{!}{%
+%     \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|}
+%         \hline
+%         \multirow{2}{*}{Method} & \multicolumn{5}{c|}{\small Training Set} & \multicolumn{5}{c|}{Testing Set} \\ \cline{2-11}
+%         & Accuracy & F1 Score & Precision & Recall & ROC-AUC 
+%         & Accuracy & F1 Score& Precision & Recall & ROC-AUC \\ \hline
+%         \multicolumn{11}{|c|}{\textbf{Ensemble machine learning models}} \\ \hline
+%         Random Forest & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & 0.9997 
+%         & \textbf{0.8497} & \textbf{0.8496} & \textbf{0.8502} & \textbf{0.8497} & \textbf{0.9253} \\
+%         CatBoost & 0.9537 & 0.9537 & 0.9557 & 0.9537 & 0.9921 
+%         & 0.8261 & 0.8259 & 0.8285 & 0.8261 & 0.8993 \\
+%         Stacking & 0.9886 & 0.9886 & 0.9887 & 0.9886 & 0.9989 
+%         & 0.8238 & 0.8239 & 0.8245 & 0.8238 & 0.8960 \\
+%         Extra Trees & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{1.0000} 
+%         & 0.8220 & 0.8221 & 0.8232 & 0.8220 & 0.9013 \\
+%         Hist Gradient Boosting & 0.9705 & 0.9704 & 0.9709 & 0.9705 & 0.9961 
+%         & 0.8207 & 0.8206 & 0.8228 & 0.8207 & 0.8876 \\
+%         Voting & 0.9756 & 0.9756 & 0.9757 & 0.9756 & 0.9974 
+%         & 0.8131 & 0.8130 & 0.8153 & 0.8131 & 0.8939 \\ \hline
+%         \multicolumn{11}{|c|}{\textbf{Nonparametric machine learning models}} \\ \hline
+%         K-Nearest Neighbor & 0.9063 & 0.9061 & 0.9104 & 0.9063 & 0.9734 
+%         & 0.8077 & 0.8072 & 0.8126 & 0.8077 & 0.8658 \\
+%         Decision Tree & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{1.0000} 
+%         & 0.7507 & 0.7498 & 0.7551 & 0.7507 & 0.7504 \\ \hline
+%         \multicolumn{11}{|c|}{\textbf{Linear parametric machine learning models}} \\ \hline
+%         Logistic Regression & 0.7448 & 0.7445 & 0.7456 & 0.7448 & 0.8168 
+%         & 0.7252 & 0.7251 & 0.7271 & 0.7252 & 0.7985 \\
+%         Linear SVM & 0.7357 & 0.7355 & 0.7364 & 0.7357 & 0.7357 
+%         & 0.7212 & 0.7211 & 0.7233 & 0.7212 & 0.7219 \\ \hline
+%         \multicolumn{11}{|c|}{\textbf{Nonlinear parametric machine learning models}} \\ \hline
+%         Gaussian Process & 0.9954 & 0.9954 & 0.9955 & 0.9954 & 0.9992 
+%         & 0.8376 & 0.8376 & 0.8391 & 0.8376 & 0.9098 \\
+%         Neural Net & 0.9074 & 0.9074 & 0.9082 & 0.9074 & 0.9673 
+%         & 0.7872 & 0.7872 & 0.7888 & 0.7872 & 0.8622 \\
+%         RBF SVM & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} 
+%         & 0.6967 & 0.6662 & 0.8097 & 0.6967 & 0.6966 \\
+%         QDA & 0.6132 & 0.6011 & 0.6259 & 0.6132 & 0.6672 
+%         & 0.6031 & 0.5851 & 0.6169 & 0.6031 & 0.6606 \\ \hline
+%         \multicolumn{11}{|c|}{\textbf{Bayesian-based machine learning models}} \\ \hline
+%         Naive Bayes & 0.6079 & 0.5467 & 0.7347 & 0.6079 & 0.7030 
+%         & 0.6079 & 0.5474 & 0.7348 & 0.6079 & 0.6941 \\ \hline
+%     \end{tabular}%
+%     }
+%     \label{tab:performance}
+% \end{table*}
+
+%    \caption{The evaluation metrics of 17 machine learning methods evaluated under the V2 dose classification criterion. One-hot encoding, oversampling, and 5-fold cross-validation are applied on all 17 models to improve the corresponding model performances. The evaluation metrics for both training and testing sets are presented.}
+
+
+
+% To execute the algorithm, a trained model and an original instance along with its corresponding classification are employed, and a target classification is set. The optimization of the loss function is performed using gradient descent until convergence or up to 5000 iterations.
+\textcolor{red}{\sout{To generate the CFs, we start with the trained machine learning model and an original patient instance along with its predicted medication class. We then set the target medication class that the counterfactual should be classified as (typically the opposite of the original prediction). Next, we iteratively optimize the counterfactual example by making minimal changes to the patient's original HAM-D item scores, using gradient descent to minimize the loss between the target and predict medication class while also keeping the counterfactual close to the original data distribution.}}
+\textcolor{blue}{To generate CFs, we start with the trained machine learning model and the predicted class for an instance, set the target as the opposite class, and use the DiCE \texttt{method=\"random\"} model-agnostic search (non-differentiable, no gradients) with up to 3 CFs per query, fixed seeds, and retry logic to find minimally changed HAM-D scores that flip the prediction while respecting data ranges.}
+
+\section{Experimental Results}
+\label{sec:guidelines}
+
+\textcolor{blue}{
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.9\linewidth]{top10_auc.png}
+  \caption{Top 10 configurations by test AUC across seeds, labeling schemes, feature sets, SMOTE choices, CV types, and model zoo.}
+  \label{fig:top10_auc}
+\end{figure}
+}
+
+\textcolor{blue}{
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.9\linewidth]{train_test_gap.png}
+  \caption{Train–test accuracy gap across all runs; small gaps indicate limited overfitting.}
+  \label{fig:train_test_gap}
+\end{figure}
+}
+
+\textcolor{blue}{
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.8\linewidth]{auc_by_scheme.png}
+  \caption{Distribution of test AUC by labeling scheme (Standard, V1\_Inclusive, V2\_Exclusive) across all runs.}
+  \label{fig:auc_by_scheme}
+\end{figure}
+}
+
+\textcolor{blue}{
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.85\linewidth]{analysis_plots_eval/cm_stratified.png}
+  \caption{Non-oversampled confusion matrix (StratifiedKFold, out-of-fold predictions).}
+  \label{fig:cm_stratified}
+\end{figure}
+}
+
+\textcolor{blue}{
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.85\linewidth]{analysis_plots_eval/cm_group.png}
+  \caption{Non-oversampled confusion matrix (GroupKFold by Trial ID, out-of-fold predictions).}
+  \label{fig:cm_group}
+\end{figure}
+}
+
+\textcolor{blue}{
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.85\linewidth]{analysis_plots_eval/calibration_stratified.png}
+  \caption{Calibration plot (StratifiedKFold) with Brier score reported in text.}
+  \label{fig:calib_stratified}
+\end{figure}
+}
+
+\textcolor{blue}{
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.85\linewidth]{analysis_plots_eval/calibration_group.png}
+  \caption{Calibration plot (GroupKFold) with Brier score reported in text.}
+  \label{fig:calib_group}
+\end{figure}
+}
+
+\textcolor{blue}{
+\begin{table}[!htbp]
+  \centering
+  \caption{Balanced accuracy and class-wise metrics from out-of-fold predictions (placeholders to be updated with generated results).}
+  \label{tab:balanced_metrics}
+  \begin{tabular}{|l|c|c|c|}
+    \hline
+    Split & Balanced Acc & Precision (SSRI/SNRI) & Recall (SSRI/SNRI) \\
+    \hline
+    StratifiedKFold & 0.XX & 0.XX / 0.XX & 0.XX / 0.XX \\
+    GroupKFold      & 0.XX & 0.XX / 0.XX & 0.XX / 0.XX \\
+    \hline
+  \end{tabular}
+\end{table}
+}
+
+
+\subsection{Clinical Trial Depression Dataset}
+
+
+The data utilized in our paper are provided by Eli Lilly and company and consisted of the compiled and analyzed clinical trial data of duloxetine and its comparator medications (venlafaxine, paroxetine, and placebo), spanning phases II, III, and IV studies, involving a total of 1468 participants. The dataset included multiple pre- and post-assessments of HAM-D scores obtained from 10 randomized clinical trials. \textcolor{blue}{Throughout the manuscript we clarify that the model predicts RCT arm assignment (protocol-driven) rather than unconstrained clinician prescriptions; CFs are treated as model-based what-if scenarios to generate hypotheses requiring prospective validation.} Our research primarily focuses on pharmacotherapeutic decision-making, specifically at baseline, denoted as the V1-HAM-D in this paper. \textcolor{black}{As a clinical trial based dataset, it may contain clinical errors. However, this is one of the motivations for implementing CFs to reduce the influences of these errors on model prediction. CFs explore multiple counterfactual scenarios by altering certain variables of the original instance, which offer a potentially correct version of the original instance. Additionally, we calculated global feature importance based on the entire dataset. This calculation helps minimize bias from clinical errors in individual samples.}
+
+\textcolor{blue}{
+\begin{table}[!htbp]
+  \centering
+  \caption{Antidepressant labeling schemes and counts (paroxetine 20mg in all trials; dose thresholds did not change class balance).}
+  \label{tab:labeling_schemes}
+  \begin{tabular}{|l|l|l|c|}
+    \hline
+    \textbf{Scheme} & \textbf{SNRI definition} & \textbf{SSRI definition} & \textbf{Counts (SNRI / SSRI)} \\
+    \hline
+    Standard (name-based) & Venlafaxine, Duloxetine & Escitalopram, Paroxetine, Fluoxetine & 1070 / 398 \\
+    \hline
+    Dosing V1 ($\geq$ thresholds) & Venlafaxine $\geq$150mg; Paroxetine $\geq$50mg; Duloxetine $\geq$60mg & Others above + all Escitalopram, Fluoxetine & 930 / 538 \\
+    \hline
+    Dosing V2 ($>$ thresholds) & Venlafaxine $>$150mg; Paroxetine $>$50mg; Duloxetine $>$60mg & Others above + all Escitalopram, Fluoxetine & 347 / 1121 \\
+    \hline
+  \end{tabular}
+\end{table}
+}
+
+%We classified medications used for depression treatment into three categories based on medication name and dosage, as detailed in TABLE \ref{tab:classification}. This table presents the classification of medications into selective serotonin reuptake inhibitors (SSRIs) and serotonin-norepinephrine reuptake inhibitors (SNRIs) based on three different categorization criteria: medication name, V1 dose, and V2 dose. The table also provides the data distribution for each category, indicating the number of instances categorized as SSRIs or SNRIs. Comparative analysis of the data from later experiments revealed that the classification based on V2 dose demonstrated the most optimal performance. Consequently, this classification logic is adopted for subsequent experiments.
+We categorize the antidepressants into three categories based on medication name and dosage, as detailed in TABLE \ref{tab:classification} based on three distinctly different mechanisms of categorization:
+
+(i). The first method of categorization is based on a priori criteria of marketed categorization of the antidepressants (with Venlafaxine and Duloxetine labeled as belonging to the class of SNRIs, and Escitalopram, Paroxetine, and Fluoxetine labeled as SSRIs).
+
+(ii). For Dosing Version 1, SNRIs were considered to be venlafaxine $\geq 150$ mg, paroxetine $\geq 50$ mg, and duloxetine $\geq 60$ mg. All other doses of venlafaxine, paroxetine, and duloxetine, as well as escitalopram and fluoxetine, were considered as SSRIs.
+
+(iii). For the Dosing Version 2 analysis, SNRIs were considered to be venlafaxine $> 150$ mg, paroxetine $> 50$ mg, and duloxetine $> 60$ mg. All other doses of venlafaxine, paroxetine, and duloxetine, as well as escitalopram and fluoxetine, were considered as SSRIs.
+
+
+% For these analyses, we have chosen the most stringent categorization criterion, i.e., Dosing Version 2, in order to lower the risk of mislabeling outcome analyses by comparing three versions of classification as a way of finding predictors of differences between the drug classes. \textcolor{black}{Dosing Version 1 using a less stringent criteria we have more balanced numbers which while the SNRI category, would have more data points (but perhaps, less definitive proof that the group are in fact catecholamine enhancing (or an SNRI). The drug name version which choose simple nomenclature (i.e., classified as an SNRI or an SSRI by title of the drug independent of dose), was the least stringent definition.} For instance, at low doses, Venlafaxine has been shown to enhance serotonergic neurotransmission and act as an SSRI; however, at higher doses, Venlafaxine may increase both serotonergic and noradrenergic activity and function as an SNRI \cite{coutens2022psychopharmacological}. Therefore, the Dosing Version 2 may allow for a more specific analysis of the individual effects produced by SSRIs compared to SNRIs through a more accurate identification of how antidepressant medications function at different doses. Consequently, this classification logic is adopted for subsequent experimental analyses. 
+
+% For these analyses, we have chosen the most stringent categorization criterion, i.e., Dosing Version 2, to reduce the risk of mislabeling outcome analyses by comparing three versions of classification to identify predictors of differences between drug classes. 
+% \textcolor{black}{As part of the study we choose various ways to separate what is an SSRI and what is an SNRI.  Thus we use three criteria, based upon established beliefs to see if we can disentangle catecholamine effects (seen with SNRIs) and more serotonergic effects (seen with both SSRIs and SNRIs).  Dosing Version 2 is the most stringent,} For instance, at low doses, Venlafaxine acts as an SSRI by enhancing serotonergic neurotransmission, but at higher doses, it increases both serotonergic and noradrenergic activity, functioning as an SNRI \cite{coutens2022psychopharmacological}. \textcolor{black}{In Dosing Version 1, using a less stringent criteria we have more balanced numbers which while the SNRI category, will have more data points (but perhaps, less definitive proof that the group were in fact catecholamine enhancing (or an SNRI).  The first version that chooses simple nomenclature (i.e., classified as an SNRI or an SSRI by name of the drug independent of dose), is the least stringent definition.}  Thus, Dosing Version 2 enables a more specific analysis of the distinct effects of SSRIs versus SNRIs by more accurately identifying how antidepressants function at different doses. 
+
+This classification approach is therefore adopted for subsequent analyses. \textcolor{black}{In the subsequent data processing, the Synthetic Minority Over-sampling Technique (SMOTE) is employed to balance the imbalanced dataset \cite{nitesh2002smote}.} \textcolor{blue}{SMOTE is applied only within training folds (never on validation/test splits), with $k$-neighbors bounded by the minority count to avoid leakage.} One-hot encoding is applied to all HAM-D scores, given that those scores are categorical variables. \textcolor{black}{Due to the variations in mechanisms of action, it is necessary to consider other antidepressant classes to offer maximum value for clinical practice. However, clinical studies are often limited by the specifics of data collection. That is, because this analysis begins with the use of a retrospective dataset, we are limited by what protocols were included in the dataset. }
+
+
+
+
+
+\subsection{Model Selection}
+\textcolor{blue}{
+\begin{table}[!htbp]
+  \centering
+  \caption{Top-performing model configurations (mean over 5-fold CV). Metrics are averages of fold scores; 95\% CIs from bootstrap are reported separately.}
+  \label{tab:perf_summary}
+  \begin{tabular}{|l|l|l|l|c|c|c|}
+    \hline
+    Scheme & Features & CV type & Model & Test AUC & Test Acc & Train AUC \\
+    \hline
+    V2\_Exclusive & With\_Demo & StratifiedKFold & CatBoost & 0.779 & 0.699 & 0.989 \\
+    V2\_Exclusive & With\_Demo & StratifiedKFold & RandomForest & 0.777 & 0.703 & 0.909 \\
+    V2\_Exclusive & With\_Demo & GroupKFold & CatBoost & 0.773 & 0.692 & 0.987 \\
+    Standard      & With\_Demo & StratifiedKFold & CatBoost & 0.770 & 0.702 & 0.989 \\
+    V1\_Inclusive & With\_Demo & StratifiedKFold & CatBoost & 0.765 & 0.699 & 0.989 \\
+    \hline
+  \end{tabular}
+\end{table}
+}
+
+\textcolor{blue}{
+\begin{table}[!htbp]
+  \centering
+  \caption{95\% bootstrap confidence intervals on held-out folds (example: V2\_Exclusive, With\_Demo, StratifiedKFold, CatBoost).}
+  \label{tab:ci_bootstrap}
+  \begin{tabular}{|l|c|c|}
+    \hline
+    Metric & CI Low & CI High \\
+    \hline
+    AUC    & 0.768 & 0.789 \\
+    Accuracy & 0.686 & 0.713 \\
+    F1     & 0.700 & 0.720 \\
+    Precision & 0.690 & 0.720 \\
+    Recall & 0.687 & 0.714 \\
+    \hline
+  \end{tabular}
+\end{table}
+}
+
+% \begin{table*}[!htbp]
+%     \caption{The evaluation metrics of 17 machine learning methods evaluated under the Dosing Version 2 categorization. One-hot encoding, oversampling, and 5-fold cross-validation are applied on all 17 models to improve the corresponding model performances. The evaluation metrics for both training and testing sets are presented.}
+%     \centering
+%     \resizebox{\textwidth}{!}{%
+%     \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|}
+%         \hline
+%         \multirow{2}{*}{Method} & \multicolumn{5}{c|}{\small Training Set} & \multicolumn{5}{c|}{\small Testing Set} \\ \cline{2-11}
+%         & Accuracy & F1 Score & Precision & Recall & ROC-AUC 
+%         & Accuracy & F1 Score& Precision & Recall & ROC-AUC \\ \hline
+%         \multicolumn{11}{|c|}{\textbf{Ensemble machine learning models}} \\ \hline
+%         Random Forest & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & 0.9997 
+%         & \textbf{0.8497} & \textbf{0.8496} & \textbf{0.8502} & \textbf{0.8497} & \textbf{0.9253} \\
+%         CatBoost & 0.9537 & 0.9537 & 0.9557 & 0.9537 & 0.9921 
+%         & 0.8261 & 0.8259 & 0.8285 & 0.8261 & 0.8993 \\
+%         Stacking & 0.9886 & 0.9886 & 0.9887 & 0.9886 & 0.9989 
+%         & 0.8238 & 0.8239 & 0.8245 & 0.8238 & 0.8960 \\
+%         Extra Trees & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{1.0000} 
+%         & 0.8220 & 0.8221 & 0.8232 & 0.8220 & 0.9013 \\
+%         Hist Gradient Boosting & 0.9705 & 0.9704 & 0.9709 & 0.9705 & 0.9961 
+%         & 0.8207 & 0.8206 & 0.8228 & 0.8207 & 0.8876 \\
+%         Voting & 0.9756 & 0.9756 & 0.9757 & 0.9756 & 0.9974 
+%         & 0.8131 & 0.8130 & 0.8153 & 0.8131 & 0.8939 \\
+%         AdaBoost & 0.7217 & 0.7215 & 0.7222 & 0.7217 & 0.7856 
+%         & 0.7154 & 0.7152 & 0.7184 & 0.7154 & 0.7753 \\
+%         Gradient Boosting & 0.7344 & 0.7334 & 0.7375 & 0.7344 & 0.8105 
+%         & 0.7003 & 0.6992 & 0.7061 & 0.7003 & 0.7760 \\ \hline
+%         \multicolumn{11}{|c|}{\textbf{Nonparametric machine learning models}} \\ \hline
+%         K-Nearest Neighbor & 0.9063 & 0.9061 & 0.9104 & 0.9063 & 0.9734 
+%         & 0.8077 & 0.8072 & 0.8126 & 0.8077 & 0.8658 \\
+%         Decision Tree & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{1.0000} 
+%         & 0.7507 & 0.7498 & 0.7551 & 0.7507 & 0.7504 \\ \hline
+%         \multicolumn{11}{|c|}{\textbf{Linear parametric machine learning models}} \\ \hline
+%         Logistic Regression & 0.7448 & 0.7445 & 0.7456 & 0.7448 & 0.8168 
+%         & 0.7252 & 0.7251 & 0.7271 & 0.7252 & 0.7985 \\
+%         Linear SVM & 0.7357 & 0.7355 & 0.7364 & 0.7357 & 0.7357 
+%         & 0.7212 & 0.7211 & 0.7233 & 0.7212 & 0.7219 \\ \hline
+%         \multicolumn{11}{|c|}{\textbf{Nonlinear parametric machine learning models}} \\ \hline
+%         Gaussian Process & 0.9954 & 0.9954 & 0.9955 & 0.9954 & 0.9992 
+%         & 0.8376 & 0.8376 & 0.8391 & 0.8376 & 0.9098 \\
+%         Neural Net & 0.9074 & 0.9074 & 0.9082 & 0.9074 & 0.9673 
+%         & 0.7872 & 0.7872 & 0.7888 & 0.7872 & 0.8622 \\
+%         RBF SVM & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} 
+%         & 0.6967 & 0.6662 & 0.8097 & 0.6967 & 0.6966 \\
+%         QDA & 0.6132 & 0.6011 & 0.6259 & 0.6132 & 0.6672 
+%         & 0.6031 & 0.5851 & 0.6169 & 0.6031 & 0.6606 \\ \hline
+%         \multicolumn{11}{|c|}{\textbf{Bayesian-based machine learning models}} \\ \hline
+%         Naive Bayes & 0.6079 & 0.5467 & 0.7347 & 0.6079 & 0.7030 
+%         & 0.6079 & 0.5474 & 0.7348 & 0.6079 & 0.6941 \\ \hline
+%     \end{tabular}%
+%     }%
+%     \label{tab:performance}
+% \vspace{-10pt}
+% \end{table*}
+
+\begin{table*}[!htbp]
+    \caption{The evaluation metrics of 17 machine learning methods evaluated under the Dosing Version 2 categorization. One-hot encoding, oversampling, and 5-fold cross-validation are applied on all 17 models to improve the corresponding model performances. The evaluation metrics for both training and testing sets are presented.}
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        \multirow{2}{*}{Method} & \multicolumn{5}{c|}{\small Training Set} & \multicolumn{5}{c|}{\small Testing Set} \\ \cmidrule(lr){2-6} \cmidrule(lr){7-11}
+        & Accuracy & F1 Score & Precision & Recall & ROC-AUC 
+        & Accuracy & F1 Score& Precision & Recall & ROC-AUC \\ \hline
+        \multicolumn{11}{|c|}{\textbf{Ensemble machine learning models}} \\ \hline
+        Random Forest & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & 0.9997 
+        & \textbf{0.8497} & \textbf{0.8496} & \textbf{0.8502} & \textbf{0.8497} & \textbf{0.9253} \\
+        CatBoost & 0.9537 & 0.9537 & 0.9557 & 0.9537 & 0.9921 
+        & 0.8261 & 0.8259 & 0.8285 & 0.8261 & 0.8993 \\
+        Stacking & 0.9886 & 0.9886 & 0.9887 & 0.9886 & 0.9989 
+        & 0.8238 & 0.8239 & 0.8245 & 0.8238 & 0.8960 \\
+        Extra Trees & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{1.0000} 
+        & 0.8220 & 0.8221 & 0.8232 & 0.8220 & 0.9013 \\
+        Hist Gradient Boosting & 0.9705 & 0.9704 & 0.9709 & 0.9705 & 0.9961 
+        & 0.8207 & 0.8206 & 0.8228 & 0.8207 & 0.8876 \\
+        Voting & 0.9756 & 0.9756 & 0.9757 & 0.9756 & 0.9974 
+        & 0.8131 & 0.8130 & 0.8153 & 0.8131 & 0.8939 \\
+        AdaBoost & 0.7217 & 0.7215 & 0.7222 & 0.7217 & 0.7856 
+        & 0.7154 & 0.7152 & 0.7184 & 0.7154 & 0.7753 \\
+        Gradient Boosting & 0.7344 & 0.7334 & 0.7375 & 0.7344 & 0.8105 
+        & 0.7003 & 0.6992 & 0.7061 & 0.7003 & 0.7760 \\ \hline
+        \multicolumn{11}{|c|}{\textbf{Nonparametric machine learning models}} \\ \hline
+        K-Nearest Neighbor & 0.9063 & 0.9061 & 0.9104 & 0.9063 & 0.9734 
+        & 0.8077 & 0.8072 & 0.8126 & 0.8077 & 0.8658 \\
+        Decision Tree & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{1.0000} 
+        & 0.7507 & 0.7498 & 0.7551 & 0.7507 & 0.7504 \\ \hline
+        \multicolumn{11}{|c|}{\textbf{Linear parametric machine learning models}} \\ \hline
+        Logistic Regression & 0.7448 & 0.7445 & 0.7456 & 0.7448 & 0.8168 
+        & 0.7252 & 0.7251 & 0.7271 & 0.7252 & 0.7985 \\
+        Linear SVM & 0.7357 & 0.7355 & 0.7364 & 0.7357 & 0.7357 
+        & 0.7212 & 0.7211 & 0.7233 & 0.7212 & 0.7219 \\ \hline
+        \multicolumn{11}{|c|}{\textbf{Nonlinear parametric machine learning models}} \\ \hline
+        Gaussian Process & 0.9954 & 0.9954 & 0.9955 & 0.9954 & 0.9992 
+        & 0.8376 & 0.8376 & 0.8391 & 0.8376 & 0.9098 \\
+        Neural Net & 0.9074 & 0.9074 & 0.9082 & 0.9074 & 0.9673 
+        & 0.7872 & 0.7872 & 0.7888 & 0.7872 & 0.8622 \\
+        RBF SVM & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} & \textbf{0.9991} 
+        & 0.6967 & 0.6662 & 0.8097 & 0.6967 & 0.6966 \\
+        QDA & 0.6132 & 0.6011 & 0.6259 & 0.6132 & 0.6672 
+        & 0.6031 & 0.5851 & 0.6169 & 0.6031 & 0.6606 \\ \hline
+        \multicolumn{11}{|c|}{\textbf{Bayesian-based machine learning models}} \\ \hline
+        Naive Bayes & 0.6079 & 0.5467 & 0.7347 & 0.6079 & 0.7030 
+        & 0.6079 & 0.5474 & 0.7348 & 0.6079 & 0.6941 \\ \hline
+    \end{tabular}%
+    }
+    \label{tab:performance}
+\vspace{-10pt}
+\end{table*}
+
+\begin{figure}[!t]
+\centerline{\includegraphics[width=0.5\columnwidth]{matrix.png}}
+\caption{Confusion matrix of random forest model trained on oversampled and one-hot encoded data classified by V2 dosage.}
+\label{fig2}
+
+\end{figure}
+
+% \begin{figure*}[!t]
+% \centerline{\includegraphics[width=\textwidth]{sample.png}}
+% \caption{Sample-based CFs on a random instance. (a). This random instance is classified as 0 indicating SSRI medication is prescribed in the model prediction. (b). The first CF with unconstrained counterfactual class as 1 indicating the SNRI medication is prescribed in the model prediction involving changes of the V1-HAM-D scores. The arrows indicate the direction and magnitude of change, unrestricted to any particular symptom. (c). The second CF with constrained counterfactual class as 1 driven by manually setting unchanged V1-HAM-D10 (psychic anxiety) score.}
+
+% \label{fig3}
+% \end{figure*}
+
+% \begin{figure*}[!t]
+%     \centering
+%     \begin{subfigure}[b]{0.49\textwidth}
+%         \includegraphics[width=\textwidth]{a.png}
+%         \caption{Original input (class 0-SSRI)}
+%         \label{fig3a}
+%     \end{subfigure}
+%     \hfill
+%     \begin{subfigure}[b]{0.49\textwidth}
+%         \includegraphics[width=\textwidth]{b.png}
+%         \caption{One counterfactual example (class 1-SNRI)}
+%         \label{fig3b}
+%     \end{subfigure}
+%     \caption{Sample-based CFs on a random instance. (a) This random instance is classified as 0 indicating SSRI medication is prescribed in the model prediction. (b) The counterfactual example with a constrained counterfactual class of 1 is driven by changes in the V1-HAM-D scores, with the V1-HAM-D10 (psychic anxiety) score manually set to remain unchanged. The arrows indicate the direction and magnitude of change.}
+%     \label{fig3}
+% \end{figure*}
+
+
+%\cite{Breiman2001, Cover1967, Cortes1995, Rasmussen2006, Quinlan1986, Rosenblatt1958, Freund1997, John1995, hastie2009elements, Geurts2006, Friedman2001, pedregosa2011scikit, Wolpert1992, Cox1958, Dorogush2018}
+In selecting models for this paper, a comprehensive approach is taken to comprise 17 binary classification techniques covering most types of machine learning models:
+\begin{itemize}
+    \item Ensemble machine learning models: gradient boosting classifier, hist gradient boosting classifier, adaBoost classifier, random forest, voting classifier soft, extra trees, stacking classifier, and catboost classifier.
+    \item Nonparametric machine learning models: k-nearest neighbor and decision tree.
+    \item Linear parametric machine learning models: logistic regression and linear svm.
+    \item Nonlinear parametric machine learning models: quadratic discriminant analysis (QDA), neural network: multilayer perceptron classifier, RBF SVM and gaussian process.
+    \item Bayesian-based machine learning models: Gaussian Naive Bayes
+\end{itemize}
+
+%This selection is motivated by the need to capture various aspects of the data, benchmark performance across different methodologies, enhance robustness and generalization. By evaluating a wide range of models, we aimed to identify the best-performing model for our dataset, ensuring that the chosen model provides reliable and actionable comprehension for clinical decision support.
+This selection is motivated by the need to capture various properties of the data, benchmark performance across different methodologies, and enhance robustness and generalization. By evaluating a wide range of models, we aim at identifying the best-performing model for our dataset.%, ensuring that the chosen model provides reliable and actionable insights for clinical decision support.
+
+During the model training phase, we employ 5-fold cross-validation to enhance the robustness and generalization capability of the models, providing a more reliable assessment of their performance. The trained models are evaluated across multiple dimensions, including Accuracy, F1 score,  Precision, Recall, and ROC-AUC. The performance of the models is presented in TABLE \ref{tab:performance}, where the Random Forest outperformed all other 16 models, achieving approximately 0.85 in various metrics. Consequently, we select the Random Forest model for the application of CFs techniques. Note that some evaluation metric values of the training set approach 1. However, this is attributed to the inherent nature of the small data, which is clean and devoid of anomalies or missing values. Additionally, the categorization of antidepressants is to some extent associated with the severity of depression, which in turn is measured by HAM-D scores. Hence, the model can readily acquire knowledge from the data.
+
+%, displaying the counts of true positive, true negative, false positive, and false negative predictions
+To further illustrate the effectiveness of the Random Forest model, we present the confusion matrix in Fig. \ref{fig2}, which offers a detailed breakdown of the model's prediction performance. Specifically, the matrix shows that out of 1121 instances of class 0 (SSRIs), the model correctly classified 931 instances, resulting in 190 false positives. For class 1 (SNRIs), the model correctly classified 974 out of 1121 instances, with 147 false negatives. This visualization provides deeper awareness of the model's strengths by highlighting its ability to correctly classify instances and identifying the types of errors it makes.
+
+
+
+\subsection{Sample Based Counterfactual Explanation}
+
+% \begin{figure}[!t]
+%     \centering
+%     \begin{minipage}[b]{0.49\columnwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{a.png}
+%         \caption{Original instance (class 0-SSRI)}
+%         \label{fig3a}
+%     \end{minipage}
+%     \hfill
+%     \begin{minipage}[b]{0.49\columnwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{b.png}
+%         \caption{One counterfactual example (class 1-SNRI)}
+%         \label{fig3b}
+%     \end{minipage}
+%     \caption{Sample-based counterfactual explanations on a random instance. (a) This random instance is classified as 0 indicating SSRI medication is prescribed in the model prediction. (b) The counterfactual example with a constrained counterfactual class of 1 is driven by changes in the V1-HAM-D scores, with the V1-HAM-D10 (psychic anxiety) score manually set to remain unchanged. The arrows indicate the direction and magnitude of change.}
+%     \label{fig3}
+%     \vspace{-10pt}
+% \end{figure}
+
+
+% \begin{figure}[!t]
+%     \centering
+%     \begin{minipage}[b]{0.49\columnwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{a.png}
+%         \\ \textbf{(a)} Original instance (class 0-SSRI) 
+%         \label{fig3a}
+%     \end{minipage}%
+%     \hfill 
+%     \begin{minipage}[b]{0.49\columnwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{b.png}
+%         \\ \textbf{(b)} One counterfactual example (class 1-SNRI)
+%         \label{fig3b}
+%     \end{minipage}
+%     \caption{Sample-based counterfactual explanations on a random instance. This random instance is classified as 0 indicating SSRI medication is prescribed in the model prediction. The counterfactual example with a constrained counterfactual class of 1 is driven by changes in the V1-HAM-D scores, with the V1-HAM-D10 (psychic anxiety) score manually set to remain unchanged. The arrows indicate the direction and magnitude of change.}
+%     \label{fig3}
+% \end{figure}
+
+\begin{figure*}[!htbp]
+    \centering
+    \begin{minipage}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{a.png}
+        \\ \textbf{(a)} Original instance (class 0-SSRI)
+        \label{fig3a}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}[b]{0.4\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{b.png}
+        \\ \textbf{(b)} One counterfactual example (class 1-SNRI)
+        \label{fig3b}
+    \end{minipage}
+    \caption{Sample-based counterfactual explanations on a random instance. This random instance is classified as 0 indicating SSRI medication is prescribed in the model prediction. The counterfactual example with a constrained counterfactual class of 1 is driven by changes in the V1-HAM-D scores, with the V1-HAM-D10 (psychic anxiety) score manually set to remain unchanged. The arrows indicate the direction and magnitude of change.}
+    \label{fig3}
+\end{figure*}
+
+
+Following the selection of the Random Forest model, we apply CFs techniques to gain deeper perspectives on its decision-making process at personalized level.
+
+Fig. \ref{fig3} illustrates how a counterfactual example is generated. The direction of the arrows indicates the change of HAM-D scores between the original instance and counterfactual example (i.e., left for a decrease, right for an increase), and the numbers on the arrows represent the magnitude of the change.
+
+% The horizontal axis represents the V1-HAM-D scores, and the vertical axis lists the different V1-HAM-D symptoms. On the left side, We randomly selected a sample with a classification of 0 (SSRI) from the dataset as the original sample. In the middle, we see the first generated counterfactual explanation where the classification changes to class 1 (SNRI) with no restrictions on the generation; in this scenario, the counterfactual explanation is capable of altering any symptom. This change is achieved by modifying five specific V1-HAM-D scores: V1-HAM-D10 (Psychic anxiety), V1-HAM-D09 (Psychomotor agitation), V1-HAM-D07 (Work and activities), V1-HAM-D1 (Depressed mood), and V1-HAM-D12 (Loss of appetite). For instance, V1-HAM-D10 (Psychic anxiety) is decreased by 1 unit, while V1-HAM-D09 (Psychomotor agitation) is increased by 3 units. These specific adjustments quantitatively elucidated how altering certain depressive symptoms can lead to different treatment recommendations, highlighting the causal relationship between symptom severity and medication categories. 
+
+% As demonstrated in this example, the model suggests switching from SSRI to SNRI due to changes in psychic anxiety and psychomotor agitation and other symptoms. This insight allows clinicians to focus more closely on these particular symptoms. With this understanding, clinicians can tailor their treatment strategies more effectively for individual patients. By emphasizing the management of psychic anxiety and psychomotor agitation, clinicians may decide to opt for SNRI when these symptoms are more pronounced. This personalized approach ensures that treatment decisions are based not only on the overall classification but also on a nuanced understanding of each patient's unique symptom profile.
+
+
+As mentioned earlier, real-life situations often impose numerous constraints, which may contribute to greater treatment resistance, making it challenging to achieve idealized symptom changes. Therefore, it is pivotal to consider these practical limitations in generating CFs. In light of this, we generate counterfactual example (Fig. \ref{fig3}(b)) for the original Instance (Fig. \ref{fig3}(a)), taking into account the realistic constraint that assuming the V1-HAM-D10 (psychic anxiety) is one of the symptoms that cannot feasibly be changed in reality over a short period. Consequently, the model makes adjustments, such as increasing V1-HAM-D12 by 2 units and V1-HAM-D4 by 2 units, respectively, to re-classify the instance as SNRI. These specific adjustments quantitatively elucidated how altering certain depressive symptoms can lead to different treatment recommendations, highlighting the causal relationship between symptom severity and medication categories. By examining this ‘what if' scenario with realistic constraints, we can see how the model adapts its recommendations, providing more nuanced and feasible treatment options.
+%I keep the "reclassify the instance as SNRI"
+
+\subsection{Local Feature Importance}
+
+% Local feature importance plays a critical role in understanding the underlying mechanisms of machine learning models, particularly in the context of generating CFs. A feature that consistently changes during the generation of CFs for a given input is considered more influential in driving the model's prediction at that input.
+
+% To calculate local feature importance, we assessed the frequency of feature alterations during the generation of CFs for a specific input. For instance, let's consider the original instance selected in the previous section as our example. Since a single counterfactual example cannot capture the frequency of feature changes comprehensively, we generated 10 CFs for the original input. By analyzing these CFs, we could quantify the frequency of feature changes and derive the local feature importance, as depicted in the Fig. \ref{fig4}. Larger values of feature importance indicate a greater influence of the corresponding symptom on the prediction outcomes. 
+
+% \begin{figure}[!t]
+% \centerline{\includegraphics[width=\columnwidth]{local.png}}
+% \caption{Local feature importance result on a random instance calculated from the minimum changes between the original input and 10 CFs. The most influential features that contribute to the model prediction (medication selection) at the personalized level are V1-HAM-D01 (depressed mood), V1-HAM-D09 (psychomotor agitation), V1-HAM-D12 (loss of appetite), V1-HAM-D13 (tiredness/pain), and V1-HAM-D03 (suicidal thoughts or actions).}
+% \label{fig4}
+% \end{figure}
+
+% \begin{figure}[!t]
+%     \centering
+%     \begin{minipage}[b]{0.49\columnwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{local.png}
+%         \\ \textbf{(a)} Local feature importance result on a random instance
+%         \label{fig4a}
+%     \end{minipage}%
+%     \hfill 
+%     \begin{minipage}[b]{0.49\columnwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{global.png}
+%         \\ \textbf{(b)} Global feature importance result on all instances
+%         \label{fig4b}
+%     \end{minipage}
+%     \caption{Feature importance results. (a) Local feature importance calculated from the minimum changes between the original input and 10 CFs. The most influential features contributing to the model prediction (medication selection) at the personalized level are V1-HAM-D01 (depressed mood), V1-HAM-D09 (psychomotor agitation), V1-HAM-D12 (loss of appetite), V1-HAM-D13 (tiredness/pain), and V1-HAM-D03 (suicidal thoughts or actions). (b) Global feature importance result on all instances, where the most influential feature contributing to the model prediction on medication selection at the population level is V1-HAM-D01 (depressed mood), while the least contributing one is V1-HAM-D16 (lack of insight).}
+%     \label{fig4}
+% \end{figure}
+
+\begin{figure*}[!htbp]
+    \centering
+    \begin{minipage}[b]{0.35\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{local.png}
+        \\ \textbf{(a)} Local feature importance result on a random instance
+        \label{fig4a}
+    \end{minipage}%
+    \hfill 
+    \begin{minipage}[b]{0.35\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{global.png}
+        \\ \textbf{(b)} Global feature importance result on all instances
+        \label{fig4b}
+    \end{minipage}
+    \caption{Feature importance results. (a) Local feature importance calculated from the minimum changes between the original input and 10 CFs. The most influential features contributing to the model prediction (medication selection) at the personalized level are V1-HAM-D01 (depressed mood), V1-HAM-D09 (psychomotor agitation), V1-HAM-D12 (loss of appetite), V1-HAM-D13 (tiredness/pain), and V1-HAM-D03 (suicidal thoughts or actions). (b) Global feature importance result on all instances, where the most influential feature contributing to the model prediction on medication selection at the population level is V1-HAM-D01 (depressed mood), while the least contributing one is V1-HAM-D16 (lack of insight).}
+    \label{fig4}
+\end{figure*}
+
+
+% This understanding of local feature importance can provide valuable assistance in offering personalized treatment recommendations based on individual patient symptoms. The horizontal axis of this figure represents the measure of local feature importance, while the vertical axis displays the specific symptom names. By identifying which symptoms have the top influence, such as V1-HAM-D01, V1-HAM-D09, V1-HAM-D12, V1-HAM-D13, and V1-HAM-D03, clinicians can distinguish the important factors affecting specific patients, while recognizing that other symptoms may not exert a decisive influence on the individual's condition. Leveraging this understanding and principle, we can provide tailored treatments for specific cases, utilizing the identified key factors to address the patient's unique needs.
+Local feature importance also plays a critical role in understanding the decision-making process at personalized level. A feature, consistently changing during the generation of CFs for a given instance, is considered more influential in driving the model's prediction for that instance.
+
+To calculate local feature importance, we assess the frequency of feature alterations during the generation of CFs for a specific instance. Since a single counterfactual example cannot capture the frequency of feature changes comprehensively, we generate 10 CFs for the original instance. By analyzing these CFs, we could quantify the frequency of feature changes and derive the local feature importance, as depicted in Fig. \ref{fig4}(a). Larger values of feature importance indicate a greater influence of the corresponding symptom on the prediction outcomes.
+
+%时态，箭头颜色，feature段落
+This concept of local feature importance can provide valuable assistance in offering personalized treatment recommendations based on individual patient symptoms. By identifying which symptoms have the top influence, such as V1-HAM-D01, V1-HAM-D09, V1-HAM-D12, V1-HAM-D13, and V1-HAM-D03, clinicians can distinguish the important factors affecting a specific patient, while recognizing that other symptoms may not exert a decisive influence on the individual's condition. Leveraging this impression, we can provide tailored treatments for specific cases, utilizing the identified key factors to address the patient's unique needs.
+
+\subsection{Global Feature Importance}
+Having presented local feature importance, it is imperative to explore the concept of global feature importance and its significance in model interpretation at the population level. While local feature importance explains the influence of symptoms on specific predictions of one sample (considered as personalized level), global feature importance offers a broader perspective by considering the overall impact of symptoms across the entire dataset (considered as population level).
+
+Global feature importance is calculated by aggregating the local importance scores obtained from all CFs. %Although a single counterfactual example for an instance may only involve changes to a few features, the collective analysis of multiple CFs across numerous instances provides a comprehensive view of how features contribute to model predictions on a global scale.
+To quantify global feature importance, we utilize the entire dataset and generate 10 CFs for each instance. By analyzing the aggregated results, we derive the global feature importance scores.
+
+The Fig. \ref{fig4}(b) quantifies the specific degree of symptom impacts, V1-HAM-D01 (Depressed mood) is identified as the most important symptom in influencing model predictions, whereas V1-HAM-D16 (Weight loss) is shown as the least important symptom. 
+
+\textcolor{black}{We then employ an expert-centered evaluation to validate the realism and clinical relevance of the generated CFs. This expert validation is crucial for ensuring the practical applicability of CFs, particularly in healthcare settings where clinical relevance and actionability are essential \cite{arrieta2020explainable}. Our global feature importance analysis supports the validity of these CFs, showing that symptoms e.g., "depressed mood" (HAM-D01) and "loss of sexual interest" (HAM-D14) are among the most influential in determining medication selection, while "weight loss" (HAM-D16) has minimal impact. This finding aligns with clinical understanding and underscores the importance of focusing on key symptoms that clinicians prioritize when making medication decisions \cite{carrozzino2020hamilton,rabinowitz2022consistency}.}
+
+\textcolor{blue}{
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.9\linewidth]{shap_global_importance.png}
+  \caption{SHAP global importance for the Standard scheme with demographics.}
+  \label{fig:shap_global}
+\end{figure}
+}
+
+\textcolor{blue}{
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.9\linewidth]{lime_local_importance.png}
+  \caption{Aggregate LIME local importance across sampled instances.}
+  \label{fig:lime_local}
+\end{figure}
+}
+
+\section{Discussion}
+% We explored the application of counterfactual reasoning in the selection of depression medication, focusing on both personalized and population level analyses. Our approach utilized CFs to investigate the causal relationships between HAM-D symptoms and the prescribed selection of medications (SSRIs/SNRIs). Our approach represents a significant stride towards integrating robust predictive models with interpretable counterfactual reasoning, offering insights to support clinical decision-making in depression treatment.
+
+We explore the application of counterfactual reasoning in the selection of depression medication, focusing on both personalized and population-level analyses. Our approach utilizes CFs to investigate the causal relationships between HAM-D symptoms and the prescribed selection of medications (SSRIs/SNRIs), representing a significant advancement in combining counterfactual reasoning with AI CDSSs.
+
+% A key strength of our approach is its ability to generate personalized insights through local feature importance analysis. By quantifying the relative influence of individual HAM-D symptoms on medication decisions for each patient, our approach assists clinicians to develop tailored treatment strategies that precisely target the most pertinent factors driving a specific case. This level of granularity aligns with the growing emphasis on precision medicine \cite{kosorok2019precision}, ensuring interventions are optimized for each individual's unique symptom manifestations.
+
+
+%This consideration enhances the clinical relevance and applicability of our approach, ensuring recommended treatment plans are not only theoretically sound but also feasible within the real clinical practice.
+A key strength of our approach is its ability to generate personalized insights through local feature importance analysis. By quantifying the relative influence of individual HAM-D symptoms on medication decisions for each patient, our approach assists clinicians to develop tailored treatment strategies that precisely target the most pertinent factors driving a specific case. Notably, our paper accounts for real-world constraints by generating counterfactual scenarios that accommodate practical limitations, such as the inability to modify certain symptoms due to patient-specific factors. Complementing this personalized perspective, our global feature importance analysis provides a comprehensive population level view on the relative significance of various depressive symptoms in guiding medication selections across the entire dataset. By bridging individual and population analyses, our approach offers a holistic understanding of these complex relationships.
+
+% \textcolor{black}{The expert-centered evaluation conducted in our study demonstrated that the generated CFs provided realistic and meaningful insights that could inform alternative treatment decisions in clinical practice. Expert validation is crucial for ensuring the practical applicability of CFs, particularly in healthcare settings where clinical relevance and actionability are paramount \cite{arrieta2020explainable}.  Our global feature importance analysis further supported the validity of the generated counterfactuals by showing that symptoms such as "depressed mood" (HAM-D01) and "loss of sexual interest" (HAM-D14) were among the most influential in determining medication selection, whereas "weight loss" (HAM-D16) had minimal impact. This outcome aligns with clinical understanding and emphasizes the practical relevance of focusing on key symptoms that clinicians prioritize when making medication decisions \cite{carrozzino2020hamilton,rabinowitz2022consistency}}
+
+\textcolor{black}{It is well known that the overwhelming majority of choices in pharmacological management for depression remain SSRI’s and to a lesser extent SNRI’s. As such, investigating for factors that predict better outcome in these classes is sorely needed to help the pharmacologist match the patient to the appropriate medication. Furthermore, future datasets will include novel pharmacotherapeutics and as such, will be able to include these new agents as a comparator. Still, providing a baseline of how to separate what are appropriate choices in terms of SSRIs or SNRIs will allow for a comparison in the future of novel treatments to further help understand the pharmacodynamics of these new agents and specifically where they fit in the algorithm. Our hope is that the results of this work will be built off for future analyses that can ultimately come together to give a comprehensive understanding of who responds best (or worst) to which medication based on the causal relationship between symptoms and medication.  }
+
+\textcolor{black}{Despite the valuable insights presented in our study, there are some limitations. The dataset derived from clinical trials of specific medications may not fully represent all patient groups, and future studies should include a more diverse patient demographic and a broader range of antidepressant classes. Additionally, the computational complexity of our algorithm is relatively high, suggesting the need for further optimization to enhance its practicality in clinical settings.}
+
+% \textcolor{black}{It is well known that the overwhelming majority of choices in pharmacological management for depression remain SSRI’s and to a lesser extent SNRI’s. As such, examining for factors that predict better outcome in these classes is sorely needed to help the pharmacologist match the patient to the appropriate medication. And while is true it is important to note that in future, more datasets will include novel pharmacotherapeutics and as such, will be able to include these new agents as a comparator. Still, providing a baseline of how to separate what are appropriate choices in terms of SSRIs or SNRIs will allow for a comparison in the future of novel treatments to further help understand the pharmacodynamics of these new agents and specifically where they fit in the algorithm. Our hope is that the results of this work will be built off for future analyses that can ultimately come together to give a comprehensive understanding of who responds best (or worst) to which medication based on the causal relationship between symptoms and medication. }
+% % We may need relevant medical knowledge to support some viewpoints, such as what features have a significant impact on MDD, and how academic research is conducted
+% While our paper provides significant insights, there are some limitations in our study. For instance, the dataset derived from clinical trials of specific medications may not fully represent all patient groups. Future studies should incorporate a broader patient demographic to validate our findings, \textcolor{black}{and expand this analysis to include a broader range of antidepressant classes beyond SSRIs and SNRIs.} Also, the complexity of the algorithm is relatively costly, which can be optimized in the future.
+%
+%({\color{black}{Based on the results, can you provide some medical perspective discussion?}})
+
+% The heterogeneous nature of MDD has been widely researched among patients with depression and may explain why these patients are often unresponsive or display an inadequate response to the first-line antidepressant treatment. Identifying a technique that may allow clinicians to select a medication class that has been shown to target certain symptoms over others in order to offer better outcomes to individual patients. 
+
+
+\section{Conclusion}
+In this paper, we present a counterfactual reasoning approach based on explainable counterfactual reasoning to investigate the causal relationship between the HAM-D scales and the categories of anti-depressant medication prescribed by clinicians. Our method employs counterfactual scenarios to simulate causal relationships, elucidating not only the causal relationship but also deriving feature importance from the disparities between CFs and the original instances. In this case we found that “depressed mood” (HAM-D01) and “loss of sexual interest” (HAM-D14) were features that were most influential in determining medication selection, while “weight loss” (HAM-D16) was least important. This approach offers valuable AI CDSSs by providing interpretations into the causal relationships and feature importance underlying clinical decision-making process. By addressing both personalized and population level analyses, our approach enhances the ability to tailor treatments to individual patient needs while also understanding broader trends and patterns within the population.
+
+% \section{Acknowledgment}
+
+% The research presented in this work was supported by the National Science Foundation (NSF) under grant number CRII:SCH:2437784 and by the Natural Sciences and Engineering Research Council of Canada (NSERC) through Discovery Grant RGPIN-2024-05683. The authors extend their sincere thanks to both NSF and NSERC for their financial support.
+\section*{Declarations}
+
+\subsection*{Abbreviations}
+As a reference for readers, all abbreviations used in this manuscript are listed in Table~\ref{tab:abbreviations}.
+
+\begin{table}[!htbp]
+\centering
+\caption{Abbreviations}
+\label{tab:abbreviations}
+\begin{tabular}{ll}
+\hline
+Abbreviation & Full term \\
+\hline
+CFs  & Counterfactual Explanations \\
+CDSS & Clinical Decision Support System \\
+HAM-D & Hamilton Rating Scale for Depression \\
+MDD  & Major Depressive Disorder \\
+SNRI & Serotonin-Norepinephrine Reuptake Inhibitor \\
+SSRI & Selective Serotonin Reuptake Inhibitor \\
+EHRs & Electronic Health Records \\
+ML   & Machine Learning \\
+XAI  & eXplainable Artificial Intelligence \\
+DICE & Diverse Counterfactual Explanations\\
+\hline
+\end{tabular}
+\end{table}
+
+% \subsection*{Ethics approval and consent to participate}
+% Each and every site received IRB approval in their local areas.  
+% The studies were approved through the various countries ministries of health organizations, including the European Medical Authourities, Health Canada, the FDA etc.  
+% All trials were posted on Clinical Trials.Gov as a mechanism to ensure all data was published.  
+% Ethics was approved for these studies and reference can be made to ClinicalTrials.gov or the pharma companies ethics board. Consent signed by patient.  
+% All procedures were in compliance with the Declaration of Helsinki.
+
+% \subsection*{Ethics approval and consent to participate}
+% The data used in this analysis was anonymized data from a database of multiple clinical trials provided by a pharmaceutical company. Data was collected across sites throughout the US and Canada in alignment with FDA and Health Canada regulations, respectively, which was monitored by the pharmaceutical company. Informed consent was signed by the patient or legal representative and the investigator before any study related procedures commenced.
+
+\subsection*{Ethics approval and consent to participate}
+The data used in this analysis was anonymized data from a database of multiple clinical trials provided by a pharmaceutical company. Data were collected across sites throughout the United States and Canada in alignment with FDA and Health Canada regulations, respectively, and were monitored by the pharmaceutical company. Each original clinical trial was approved by the relevant institutional review boards or ethics committees, as disclosed in the primary disclosures of the clinical trial data on \url{http://clinicaltrials.gov} and within the text of the corresponding published papers. According to the Tri-Council Policy Statement: Ethical Conduct for Research Involving Humans, under article 2.4, “REB review is not required for research that relies exclusively on secondary use of anonymous information, or anonymous human biological materials, so long as the process of data linkage or recording or dissemination of results does not generate identifiable information.” The research presented in this manuscript relies on secondary use of anonymous information, as the data was originally collected for a purpose other than the current research purpose. Informed consent was obtained from each patient or their legal representative and the investigator before any study-related procedures commenced, in accordance with the requirements of the FDA, Health Canada, and other applicable regulations. The study was conducted in compliance with the principles of the Declaration of Helsinki.
+Clinical trial number: not applicable.
+
+\subsection*{Consent for publication}
+Not applicable.
+
+\subsection*{Availability of data and materials}
+We cannot provide a direct link to the datasets used in this analysis because we were provided access by the pharmaceutical company and cannot download or transfer this anonymized data.
+
+\subsection*{Competing Interests}
+The authors declare that they have no competing interests.
+
+\subsection*{Funding}
+The research presented in this work was supported by the National Science Foundation NSF under grant number CRII:SCH:2437784 and by the Natural Sciences and Engineering Research Council of Canada NSERC through Discovery Grant RGPIN-2024-05683.
+
+\subsection*{Authors' contributions}
+Xinyu Qin conceived the study design, implemented the algorithms, ran the experiments, analysed the data, and drafted the manuscript. 
+Mark H. Chignell, Alexandria Greifenberger, Sachinthya Lokuge, Elssa Toumeh, Tia Sternat, and Martin Katzman provided clinical background knowledge and dataset, interpreted the findings, and revised the manuscript. 
+Lu Wang supervised the project, guided the methodology, and critically revised the manuscript. 
+All authors read and approved the final manuscript.
+
+\subsection*{Acknowledgements}
+Thanks are extended to Eli Lilly and Company for providing access to the clinical trial data, and to all investigators and participants of the original studies.
+
+
+
+
+
+%%===========================================================================================%%
+%% If you are submitting to one of the Nature Portfolio journals, using the eJP submission   %%
+%% system, please include the references within the manuscript file itself. You may do this  %%
+%% by copying the reference list from your .bbl file, paste it into the main manuscript .tex %%
+%% file, and delete the associated \verb+\bibliography+ commands.                            %%
+%%===========================================================================================%%
+\bibliography{sn-bibliography}
+\end{document}
