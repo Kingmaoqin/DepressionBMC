@@ -140,10 +140,10 @@
 %% Sample for unstructured abstract %%
 %%==================================%%
 
-\abstract{\textbf{Background:} \textcolor{red}{\sout{This study investigates how variations in Major Depressive Disorder (MDD) symptoms, quantified by the Hamilton Rating Scale for Depression (HAM-D), causally influence the prescription of SSRIs versus SNRIs.}} \textcolor{blue}{This study investigates how variations in Major Depressive Disorder (MDD) symptoms (HAM-D) are associated in a predictive model with randomized clinical trial (RCT) arm assignment between SSRIs and SNRIs, treating counterfactual explanations (CFs) as model-based what-if scenarios rather than causal effects.}  
-\textbf{Methods:} \textcolor{red}{\sout{We applied explainable counterfactual reasoning with counterfactual explanations (CFs) to assess the impact of specific symptom changes on antidepressant choice.}} \textcolor{blue}{We applied explainable counterfactual reasoning with CFs to quantify minimal symptom adjustments that would flip the model-predicted RCT assignment (opposite antidepressant class).}  
-\textbf{Results:} \textcolor{red}{\sout{Among 17 binary classifiers, Random Forest achieved highest performance (accuracy, F1, precision, recall, ROC-AUC near 0.85).}} \textcolor{blue}{Across 17 classifiers, CatBoost and Random Forest achieved the highest performance; typical test metrics ranged ~0.70–0.78 with best ROC-AUC ~0.78.} Sample-based CFs revealed both local and global feature importance of individual symptoms in medication selection.  
-\textbf{Conclusions:} \textcolor{red}{\sout{Counterfactual reasoning elucidates which MDD symptoms most strongly drive SSRI versus SNRI selection, enhancing interpretability of AI-based clinical decision support systems.}} \textcolor{blue}{Counterfactual reasoning highlights which MDD symptoms the model uses to distinguish SSRI vs. SNRI trial assignments, supporting interpretable AI-based decision support while requiring prospective real-world validation beyond the RCT context.} Future work should validate these findings on more diverse cohorts and refine algorithms for clinical deployment.
+\abstract{\textbf{Background:} This study investigates how variations in Major Depressive Disorder (MDD) symptoms (HAM-D) are associated in a predictive model with randomized clinical trial (RCT) arm assignment between SSRIs and SNRIs, treating counterfactual explanations (CFs) as model-based what-if scenarios rather than causal effects.
+\textbf{Methods:} We applied explainable counterfactual reasoning with CFs to quantify minimal symptom adjustments that would flip the model-predicted RCT assignment (opposite antidepressant class).
+\textbf{Results:} Across 17 classifiers, CatBoost and Random Forest achieved the highest performance; typical test metrics ranged ~0.70–0.78 with best ROC-AUC ~0.78. Sample-based CFs revealed both local and global feature importance of individual symptoms in medication selection.
+\textbf{Conclusions:} Counterfactual reasoning highlights which MDD symptoms the model uses to distinguish SSRI vs. SNRI trial assignments, supporting interpretable AI-based decision support while requiring prospective real-world validation beyond the RCT context. Future work should validate these findings on more diverse cohorts and refine algorithms for clinical deployment.
 }
 
 %%================================%%
@@ -446,7 +446,7 @@ By doing so, our work makes the following contributions:
 
 
 %The method \cite{wachter2017counterfactual} first introduced the notion of CF. 
-\textcolor{black}{In the context of our study, the input features $X$ represent an individual patient's various HAM-D item scores, which characterize the severity of different depressive symptoms. The counterfactual example $X'$ refers to a slightly altered version of the patient's original HAM-D item scores. The difference between $X$ and $X'$ captures the changes in symptom severity that would lead to a different predicted antidepressant medication class being selected for the patient.} \textcolor{blue}{The target class $y_{target}$ is defined as the opposite antidepressant class relative to the model's current prediction (switching SSRI $\leftrightarrow$ SNRI).} Specifically, the Eq. (\ref{eq1}) aims to find the counterfactual example $X'$ that minimizes the loss between the target medication class $y_{target}$ and the model's prediction $f(X')$, while also keeping $X'$ close to the original input $X$. \textcolor{black}{This allows us to identify the minimal changes in individual HAM-D item symptom scores that would result in the model recommending a different antidepressant medication class (e.g., switching from an SSRI to an SNRI) for the individual patient.} The formula for generating CFs is expressed as follows from Unconditional Counterfactuals \cite{wachter2017counterfactual}:
+\textcolor{black}{In the context of our study, the input features $X$ represent an individual patient's various HAM-D item scores, which characterize the severity of different depressive symptoms. The counterfactual example $X'$ refers to a slightly altered version of the patient's original HAM-D item scores. The difference between $X$ and $X'$ captures the changes in symptom severity that would lead to a different predicted antidepressant medication class being selected for the patient.} The target class $y_{target}$ is defined as the opposite antidepressant class relative to the model's current prediction (switching SSRI $\leftrightarrow$ SNRI). Specifically, the Eq. (\ref{eq1}) aims to find the counterfactual example $X'$ that minimizes the loss between the target medication class $y_{target}$ and the model's prediction $f(X')$, while also keeping $X'$ close to the original input $X$. \textcolor{black}{This allows us to identify the minimal changes in individual HAM-D item symptom scores that would result in the model recommending a different antidepressant medication class (e.g., switching from an SSRI to an SNRI) for the individual patient.} The formula for generating CFs is expressed as follows from Unconditional Counterfactuals \cite{wachter2017counterfactual}:
 
 \begin{equation}
 \label{eq1}
@@ -468,7 +468,7 @@ The $\mathcal{L}(\cdot)$ is a loss function, typically implemented using the $L_
 
 Given that features in the HAM-D scores may span diverse ranges, computing the median absolute deviation (MAD) for each continuous variable offers a robust measure. The distance function of continuous variables is obtained by Eq. (\ref{eq2}) from \cite{wachter2017counterfactual}. Here, \textcolor{black}{$d_{cont}$ represents the total count of continuous variables in the HAM-D scale, and $MAD_{p}$ denotes the median absolute deviation for the $p^{th}$ HAM-D item.}
 For categorical features in the HAM-D scale, a simple distance function is employed as Eq. (\ref{eq3}) from \cite{wachter2017counterfactual}: 1 is assigned if the value of the $X'$ differs from the $X$, otherwise, it is assigned a value of zero. Here, $d_{cat}$ represents the summary of categorical variables in HAM-D, and $\mathbb{I}$ serves as a binary indicator (0/1).
-\textcolor{blue}{In implementation, HAM-D items are kept as numeric/ordinal inputs (no one-hot in the distance metric), so multi-step jumps (e.g., 0$\rightarrow$4) are penalized more than single-step changes, improving plausibility of CF deltas. Reporting CF deltas includes each item's valid score range.}
+In implementation, HAM-D items are kept as numeric/ordinal inputs (no one-hot in the distance metric), so multi-step jumps (e.g., 0$\rightarrow$4) are penalized more than single-step changes, improving plausibility of CF deltas. Reporting CF deltas includes each item's valid score range.
 To generate multiple CFs ($X_{1}', \ldots, X_{k}')$ for computing feature importance to assist clinicians' decision-making, we adapt the DICE method. This approach builds upon the work of \cite{wachter2017counterfactual} by introducing a module that enhances the diversity of CFs. Its formula can be expressed as from \cite{mothilal2020explaining}:
 
 \begin{align}
@@ -485,8 +485,7 @@ loss = \max\left(0, 1 - z \cdot\left(f\left(X'\right)\right)\right).
 
 \textcolor{black}{Note that, when $y_{target}$ = 0 (SSRIs), $z$ is -1 and when $y_{target}$ = 1 (SNRIs), $z$ is 1.} Our objective of generating CFs is to make the model's output $f(X')$ exceed or fall below a fixed threshold (usually 0.5), without necessarily requiring it to closely match the expected output $y_{target}$ (0 or 1).
 We want to generate a set of $k$ CFs, and they will all lead to a different antidepressant medication class decision than the original input $X$.
-\textcolor{red}{\sout{Earlier we described diversity as larger $\det(K)$ for more similar CFs; this was incorrect.}}
-\textcolor{blue}{The diversity metric $dpp\_diversity(\cdot)$ uses a determinantal point process (DPP) \cite{kulesza2012determinantal} with $K_{i,j} = \frac{1}{1 + dist\left(X_{i}', X_{j}'\right)}$ and $dpp\_diversity = \det(K)$. Farther-apart CFs increase $\det(K)$, encouraging diverse counterfactual sets so clinicians see multiple feasible ways to flip SSRI/SNRI predictions.}
+The diversity metric $dpp\_diversity(\cdot)$ uses a determinantal point process (DPP) \cite{kulesza2012determinantal} with $K_{i,j} = \frac{1}{1 + dist\left(X_{i}', X_{j}'\right)}$ and $dpp\_diversity = \det(K)$. Farther-apart CFs increase $\det(K)$, encouraging diverse counterfactual sets so clinicians see multiple feasible ways to flip SSRI/SNRI predictions.
 
 
 
@@ -545,76 +544,60 @@ We want to generate a set of $k$ CFs, and they will all lead to a different anti
 
 
 % To execute the algorithm, a trained model and an original instance along with its corresponding classification are employed, and a target classification is set. The optimization of the loss function is performed using gradient descent until convergence or up to 5000 iterations.
-\textcolor{red}{\sout{To generate the CFs, we start with the trained machine learning model and an original patient instance along with its predicted medication class. We then set the target medication class that the counterfactual should be classified as (typically the opposite of the original prediction). Next, we iteratively optimize the counterfactual example by making minimal changes to the patient's original HAM-D item scores, using gradient descent to minimize the loss between the target and predict medication class while also keeping the counterfactual close to the original data distribution.}}
-\textcolor{blue}{To generate CFs, we start with the trained machine learning model and the predicted class for an instance, set the target as the opposite class, and use the DiCE \texttt{method=\"random\"} model-agnostic search (non-differentiable, no gradients) with up to 3 CFs per query, fixed seeds, and retry logic to find minimally changed HAM-D scores that flip the prediction while respecting data ranges.}
+To generate CFs, we start with the trained machine learning model and the predicted class for an instance, set the target as the opposite class, and use the DiCE \texttt{method=\"random\"} model-agnostic search (non-differentiable, no gradients) with up to 3 CFs per query, fixed seeds, and retry logic to find minimally changed HAM-D scores that flip the prediction while respecting data ranges.
 
 \section{Experimental Results}
 \label{sec:guidelines}
 
-\textcolor{blue}{
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.9\linewidth]{top10_auc.png}
   \caption{Top 10 configurations by test AUC across seeds, labeling schemes, feature sets, SMOTE choices, CV types, and model zoo.}
   \label{fig:top10_auc}
 \end{figure}
-}
 
-\textcolor{blue}{
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.9\linewidth]{train_test_gap.png}
   \caption{Train–test accuracy gap across all runs; small gaps indicate limited overfitting.}
   \label{fig:train_test_gap}
 \end{figure}
-}
 
-\textcolor{blue}{
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.8\linewidth]{auc_by_scheme.png}
   \caption{Distribution of test AUC by labeling scheme (Standard, V1\_Inclusive, V2\_Exclusive) across all runs.}
   \label{fig:auc_by_scheme}
 \end{figure}
-}
 
-\textcolor{blue}{
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.85\linewidth]{analysis_plots_eval/cm_stratified.png}
   \caption{Non-oversampled confusion matrix (StratifiedKFold, out-of-fold predictions).}
   \label{fig:cm_stratified}
 \end{figure}
-}
 
-\textcolor{blue}{
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.85\linewidth]{analysis_plots_eval/cm_group.png}
   \caption{Non-oversampled confusion matrix (GroupKFold by Trial ID, out-of-fold predictions).}
   \label{fig:cm_group}
 \end{figure}
-}
 
-\textcolor{blue}{
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.85\linewidth]{analysis_plots_eval/calibration_stratified.png}
   \caption{Calibration plot (StratifiedKFold) with Brier score reported in text.}
   \label{fig:calib_stratified}
 \end{figure}
-}
 
-\textcolor{blue}{
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.85\linewidth]{analysis_plots_eval/calibration_group.png}
   \caption{Calibration plot (GroupKFold) with Brier score reported in text.}
   \label{fig:calib_group}
 \end{figure}
-}
 
-\textcolor{blue}{
 \begin{table}[!htbp]
   \centering
   \caption{Balanced accuracy and class-wise metrics from out-of-fold predictions (placeholders to be updated with generated results).}
@@ -628,15 +611,13 @@ We want to generate a set of $k$ CFs, and they will all lead to a different anti
     \hline
   \end{tabular}
 \end{table}
-}
 
 
 \subsection{Clinical Trial Depression Dataset}
 
 
-The data utilized in our paper are provided by Eli Lilly and company and consisted of the compiled and analyzed clinical trial data of duloxetine and its comparator medications (venlafaxine, paroxetine, and placebo), spanning phases II, III, and IV studies, involving a total of 1468 participants. The dataset included multiple pre- and post-assessments of HAM-D scores obtained from 10 randomized clinical trials. \textcolor{blue}{Throughout the manuscript we clarify that the model predicts RCT arm assignment (protocol-driven) rather than unconstrained clinician prescriptions; CFs are treated as model-based what-if scenarios to generate hypotheses requiring prospective validation.} Our research primarily focuses on pharmacotherapeutic decision-making, specifically at baseline, denoted as the V1-HAM-D in this paper. \textcolor{black}{As a clinical trial based dataset, it may contain clinical errors. However, this is one of the motivations for implementing CFs to reduce the influences of these errors on model prediction. CFs explore multiple counterfactual scenarios by altering certain variables of the original instance, which offer a potentially correct version of the original instance. Additionally, we calculated global feature importance based on the entire dataset. This calculation helps minimize bias from clinical errors in individual samples.}
+The data utilized in our paper are provided by Eli Lilly and company and consisted of the compiled and analyzed clinical trial data of duloxetine and its comparator medications (venlafaxine, paroxetine, and placebo), spanning phases II, III, and IV studies, involving a total of 1468 participants. The dataset included multiple pre- and post-assessments of HAM-D scores obtained from 10 randomized clinical trials. Throughout the manuscript we clarify that the model predicts RCT arm assignment (protocol-driven) rather than unconstrained clinician prescriptions; CFs are treated as model-based what-if scenarios to generate hypotheses requiring prospective validation. Our research primarily focuses on pharmacotherapeutic decision-making, specifically at baseline, denoted as the V1-HAM-D in this paper. \textcolor{black}{As a clinical trial based dataset, it may contain clinical errors. However, this is one of the motivations for implementing CFs to reduce the influences of these errors on model prediction. CFs explore multiple counterfactual scenarios by altering certain variables of the original instance, which offer a potentially correct version of the original instance. Additionally, we calculated global feature importance based on the entire dataset. This calculation helps minimize bias from clinical errors in individual samples.}
 
-\textcolor{blue}{
 \begin{table}[!htbp]
   \centering
   \caption{Antidepressant labeling schemes and counts (paroxetine 20mg in all trials; dose thresholds did not change class balance).}
@@ -653,7 +634,6 @@ The data utilized in our paper are provided by Eli Lilly and company and consist
     \hline
   \end{tabular}
 \end{table}
-}
 
 %We classified medications used for depression treatment into three categories based on medication name and dosage, as detailed in TABLE \ref{tab:classification}. This table presents the classification of medications into selective serotonin reuptake inhibitors (SSRIs) and serotonin-norepinephrine reuptake inhibitors (SNRIs) based on three different categorization criteria: medication name, V1 dose, and V2 dose. The table also provides the data distribution for each category, indicating the number of instances categorized as SSRIs or SNRIs. Comparative analysis of the data from later experiments revealed that the classification based on V2 dose demonstrated the most optimal performance. Consequently, this classification logic is adopted for subsequent experiments.
 We categorize the antidepressants into three categories based on medication name and dosage, as detailed in TABLE \ref{tab:classification} based on three distinctly different mechanisms of categorization:
@@ -670,14 +650,13 @@ We categorize the antidepressants into three categories based on medication name
 % For these analyses, we have chosen the most stringent categorization criterion, i.e., Dosing Version 2, to reduce the risk of mislabeling outcome analyses by comparing three versions of classification to identify predictors of differences between drug classes. 
 % \textcolor{black}{As part of the study we choose various ways to separate what is an SSRI and what is an SNRI.  Thus we use three criteria, based upon established beliefs to see if we can disentangle catecholamine effects (seen with SNRIs) and more serotonergic effects (seen with both SSRIs and SNRIs).  Dosing Version 2 is the most stringent,} For instance, at low doses, Venlafaxine acts as an SSRI by enhancing serotonergic neurotransmission, but at higher doses, it increases both serotonergic and noradrenergic activity, functioning as an SNRI \cite{coutens2022psychopharmacological}. \textcolor{black}{In Dosing Version 1, using a less stringent criteria we have more balanced numbers which while the SNRI category, will have more data points (but perhaps, less definitive proof that the group were in fact catecholamine enhancing (or an SNRI).  The first version that chooses simple nomenclature (i.e., classified as an SNRI or an SSRI by name of the drug independent of dose), is the least stringent definition.}  Thus, Dosing Version 2 enables a more specific analysis of the distinct effects of SSRIs versus SNRIs by more accurately identifying how antidepressants function at different doses. 
 
-This classification approach is therefore adopted for subsequent analyses. \textcolor{black}{In the subsequent data processing, the Synthetic Minority Over-sampling Technique (SMOTE) is employed to balance the imbalanced dataset \cite{nitesh2002smote}.} \textcolor{blue}{SMOTE is applied only within training folds (never on validation/test splits), with $k$-neighbors bounded by the minority count to avoid leakage.} One-hot encoding is applied to all HAM-D scores, given that those scores are categorical variables. \textcolor{black}{Due to the variations in mechanisms of action, it is necessary to consider other antidepressant classes to offer maximum value for clinical practice. However, clinical studies are often limited by the specifics of data collection. That is, because this analysis begins with the use of a retrospective dataset, we are limited by what protocols were included in the dataset. }
+This classification approach is therefore adopted for subsequent analyses. \textcolor{black}{In the subsequent data processing, the Synthetic Minority Over-sampling Technique (SMOTE) is employed to balance the imbalanced dataset \cite{nitesh2002smote}.} SMOTE is applied only within training folds (never on validation/test splits), with $k$-neighbors bounded by the minority count to avoid leakage. One-hot encoding is applied to all HAM-D scores, given that those scores are categorical variables. \textcolor{black}{Due to the variations in mechanisms of action, it is necessary to consider other antidepressant classes to offer maximum value for clinical practice. However, clinical studies are often limited by the specifics of data collection. That is, because this analysis begins with the use of a retrospective dataset, we are limited by what protocols were included in the dataset. }
 
 
 
 
 
 \subsection{Model Selection}
-\textcolor{blue}{
 \begin{table}[!htbp]
   \centering
   \caption{Top-performing model configurations (mean over 5-fold CV). Metrics are averages of fold scores; 95\% CIs from bootstrap are reported separately.}
@@ -694,9 +673,7 @@ This classification approach is therefore adopted for subsequent analyses. \text
     \hline
   \end{tabular}
 \end{table}
-}
 
-\textcolor{blue}{
 \begin{table}[!htbp]
   \centering
   \caption{95\% bootstrap confidence intervals on held-out folds (example: V2\_Exclusive, With\_Demo, StratifiedKFold, CatBoost).}
@@ -713,7 +690,6 @@ This classification approach is therefore adopted for subsequent analyses. \text
     \hline
   \end{tabular}
 \end{table}
-}
 
 % \begin{table*}[!htbp]
 %     \caption{The evaluation metrics of 17 machine learning methods evaluated under the Dosing Version 2 categorization. One-hot encoding, oversampling, and 5-fold cross-validation are applied on all 17 models to improve the corresponding model performances. The evaluation metrics for both training and testing sets are presented.}
@@ -1018,23 +994,19 @@ The Fig. \ref{fig4}(b) quantifies the specific degree of symptom impacts, V1-HAM
 
 \textcolor{black}{We then employ an expert-centered evaluation to validate the realism and clinical relevance of the generated CFs. This expert validation is crucial for ensuring the practical applicability of CFs, particularly in healthcare settings where clinical relevance and actionability are essential \cite{arrieta2020explainable}. Our global feature importance analysis supports the validity of these CFs, showing that symptoms e.g., "depressed mood" (HAM-D01) and "loss of sexual interest" (HAM-D14) are among the most influential in determining medication selection, while "weight loss" (HAM-D16) has minimal impact. This finding aligns with clinical understanding and underscores the importance of focusing on key symptoms that clinicians prioritize when making medication decisions \cite{carrozzino2020hamilton,rabinowitz2022consistency}.}
 
-\textcolor{blue}{
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.9\linewidth]{shap_global_importance.png}
   \caption{SHAP global importance for the Standard scheme with demographics.}
   \label{fig:shap_global}
 \end{figure}
-}
 
-\textcolor{blue}{
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.9\linewidth]{lime_local_importance.png}
   \caption{Aggregate LIME local importance across sampled instances.}
   \label{fig:lime_local}
 \end{figure}
-}
 
 \section{Discussion}
 % We explored the application of counterfactual reasoning in the selection of depression medication, focusing on both personalized and population level analyses. Our approach utilized CFs to investigate the causal relationships between HAM-D symptoms and the prescribed selection of medications (SSRIs/SNRIs). Our approach represents a significant stride towards integrating robust predictive models with interpretable counterfactual reasoning, offering insights to support clinical decision-making in depression treatment.
